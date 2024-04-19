@@ -167,6 +167,13 @@ class Command extends \WP_CLI_Command {
 
 		$config_json = file_get_contents( $config_path );
 		$config      = json_decode( $config_json );
+
+		if ( ! empty( $config->user_data ) ) {
+			foreach ( $config->user_data as $field ) {
+				// Handle field
+				var_dump( $field );
+			}
+		}
 	}
 
 }
