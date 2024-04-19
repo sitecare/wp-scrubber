@@ -155,7 +155,18 @@ class Command extends \WP_CLI_Command {
 	 * @return void
 	 */
 	public function config( $args, $assoc_args ) {
+		$config_path = trailingslashit( WP_CONTENT_DIR ) . 'wp-scrubber.json';
 
+		if ( ! file_exists( $config_path ) ) {
+			\WP_CLI::error( 'Unable to locate wp-scrubber.json in the wp-content/ directory.' );
+		}
+
+		if ( ! is_readable( $config_path ) ) {
+			\WP_CLI::error( 'The wp-scrubber.json file is not readable, please check/update the file permissions.' );
+		}
+
+		$config_json = file_get_contents( $config_path );
+		$config      = json_decode( $config_json );
 	}
 
 }
