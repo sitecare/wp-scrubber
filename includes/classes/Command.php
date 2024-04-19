@@ -141,4 +141,21 @@ class Command extends \WP_CLI_Command {
 	public function comments( $args, $assoc_args ) {
 		$this->scrub( [ 'comments' ], $args, $assoc_args );
 	}
+
+	/**
+	 * Run scrubbing functions defined in json config file.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--ignore-size-limit]
+	 * : Ignore the database size limit.
+	 *
+	 * @param array $args       Positional arguments passed to the command.
+	 * @param array $assoc_args Associative arguments passed to the command.
+	 * @return void
+	 */
+	public function config( $args, $assoc_args ) {
+
+	}
+
 }
