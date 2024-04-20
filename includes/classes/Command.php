@@ -221,6 +221,19 @@ class Command extends \WP_CLI_Command {
 				$wpdb->query( "TRUNCATE TABLE {$table}" );
 			}
 		}
+
+		if ( ! empty( $config->options ) ) {
+
+			foreach ( $config->options as $option ) {
+
+				// TODO: Use wpdb for direct queries?
+				if ( 'remove' === $option->action ) {
+					delete_option( $option->name );
+				} else {
+					update_option( $option->name, Helpers\get_field_data_by_action( $option ) );
+				}
+			}
+		}
 	}
 
 }
