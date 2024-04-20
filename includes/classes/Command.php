@@ -172,7 +172,7 @@ class Command extends \WP_CLI_Command {
 		$config_json = file_get_contents( $config_path );
 		$config      = json_decode( $config_json );
 
-		// TODO: Valuidate config before continuing
+		// TODO: Validate config before continuing
 
 		if ( ! empty( $config->user_data ) ) {
 			$user_ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->users}" );
@@ -210,9 +210,16 @@ class Command extends \WP_CLI_Command {
 					$wpdb->update( $wpdb->posts, $new_data, [ 'ID' => $post_id ] );
 				}
 
+				// TODO: Handle post meta
 				// TODO: Handle post revisions?
 			}
+		}
 
+		if ( ! empty( $config->truncate_tables ) ) {
+
+			foreach ( $config->truncate_tables as $table ) {
+				$wpdb->query( "TRUNCATE TABLE {$table}" );
+			}
 		}
 	}
 
