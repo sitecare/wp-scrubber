@@ -331,6 +331,9 @@ function get_fake_data( $type ) {
 		case 'email':
 			$data = $faker->email();
 			break;
+
+		case 'sentence':
+			$data = substr( $faker->sentence(), 0, -1 );
 	}
 
 	return $data;

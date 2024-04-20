@@ -186,6 +186,33 @@ class Command extends \WP_CLI_Command {
 
 				$wpdb->update( $wpdb->users, $new_data, [ 'ID' => $user_id ] );
 			}
+
+			// TODO: Handle user meta
+		}
+
+		if ( ! empty( $config->post_types ) ) {
+
+			foreach ( $config->post_types as $post_type ) {
+				$name  = $post_type->name;
+				$query = "SELECT ID
+					FROM {$wpdb->posts}
+					WHERE post_type = %s";
+
+				$post_ids = $wpdb->get_col( $wpdb->prepare( $query, [ $name ] ) );
+
+				foreach ( $post_ids as $post_id ) {
+					$new_data = [];
+
+					foreach ( $post_type->fields as $field ) {
+						$new_data[ $field->name ] = Helpers\get_field_data_by_action( $field );
+					}
+
+					$wpdb->update( $wpdb->posts, $new_data, [ 'ID' => $post_id ] );
+				}
+
+				// TODO: Handle post revisions?
+			}
+
 		}
 	}
 
