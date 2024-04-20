@@ -155,6 +155,8 @@ class Command extends \WP_CLI_Command {
 	 * @return void
 	 */
 	public function config( $args, $assoc_args ) {
+		global $wpdb;
+
 		$config_path = trailingslashit( WP_CONTENT_DIR ) . 'wp-scrubber.json';
 
 		if ( ! file_exists( $config_path ) ) {
@@ -169,9 +171,22 @@ class Command extends \WP_CLI_Command {
 		$config      = json_decode( $config_json );
 
 		if ( ! empty( $config->user_data ) ) {
-			foreach ( $config->user_data as $field ) {
-				// Handle field
-				var_dump( $field );
+			$user_ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->users}" );
+
+			foreach ( $user_ids as $user_id ) {
+				$new_data = [];
+
+				foreach ( $config->user_data as $field ) {
+
+					switch ( $field->action ) {
+						case 'faker':
+						default:
+							$new_data[ $field->name ] = Helpers\get_fake_data( $field->faker_type );
+							break;
+					}
+				}
+
+				var_dump( $new_data );
 			}
 		}
 	}

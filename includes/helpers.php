@@ -318,3 +318,21 @@ function get_dummy_users() {
 
 	return $users;
 }
+
+function get_fake_data( $type ) {
+	$data = null;
+	$faker = \Faker\Factory::create();
+
+	switch ( $type ) {
+		case 'name':
+			$data = $faker->name();
+			break;
+
+		case 'email':
+			$data = $faker->email();
+			break;
+
+	}
+
+	return $data;
+}
