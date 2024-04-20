@@ -179,6 +179,12 @@ class Command extends \WP_CLI_Command {
 				foreach ( $config->user_data as $field ) {
 
 					switch ( $field->action ) {
+						case 'remove':
+							$new_data[ $field->name ] = '';
+							break;
+						case 'replace':
+							$new_data[ $field->name ] = $field->value;
+							break;
 						case 'faker':
 						default:
 							$new_data[ $field->name ] = Helpers\get_fake_data( $field->faker_type );
