@@ -331,7 +331,27 @@ function get_fake_data( $type ) {
 		case 'email':
 			$data = $faker->email();
 			break;
+	}
 
+	return $data;
+}
+
+function get_field_data_by_action( $field ) {
+	$data = null;
+
+	switch ( $field->action ) {
+		case 'remove':
+			$data = '';
+			break;
+
+		case 'replace':
+			$data = $field->value;
+			break;
+
+		case 'faker':
+		default:
+			$data = get_fake_data( $field->faker_type );
+			break;
 	}
 
 	return $data;

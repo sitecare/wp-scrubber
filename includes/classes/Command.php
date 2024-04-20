@@ -157,6 +157,8 @@ class Command extends \WP_CLI_Command {
 	public function config( $args, $assoc_args ) {
 		global $wpdb;
 
+		// TODO: Allow path override in args
+
 		$config_path = trailingslashit( WP_CONTENT_DIR ) . 'wp-scrubber.json';
 
 		if ( ! file_exists( $config_path ) ) {
@@ -170,6 +172,8 @@ class Command extends \WP_CLI_Command {
 		$config_json = file_get_contents( $config_path );
 		$config      = json_decode( $config_json );
 
+		// TODO: Valuidate config before continuing
+
 		if ( ! empty( $config->user_data ) ) {
 			$user_ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->users}" );
 
@@ -177,22 +181,10 @@ class Command extends \WP_CLI_Command {
 				$new_data = [];
 
 				foreach ( $config->user_data as $field ) {
-
-					switch ( $field->action ) {
-						case 'remove':
-							$new_data[ $field->name ] = '';
-							break;
-						case 'replace':
-							$new_data[ $field->name ] = $field->value;
-							break;
-						case 'faker':
-						default:
-							$new_data[ $field->name ] = Helpers\get_fake_data( $field->faker_type );
-							break;
-					}
+					$new_data[ $field->name ] = Helpers\get_field_data_by_action( $field );
 				}
 
-				var_dump( $new_data );
+				$wpdb->update( $wpdb->users, $new_data, [ 'ID' => $user_id ] );
 			}
 		}
 	}
