@@ -215,6 +215,31 @@ class Command extends \WP_CLI_Command {
 			}
 		}
 
+		if ( ! empty( $config->taxonomies ) ) {
+
+			foreach ( $config->taxonomies as $taxonomy ) {
+				$name = $taxonomy->name;
+				$query = "SELECT term_id
+					FROM {$wpdb->term_taxonomy}
+					WHERE taxonomy = %s";
+
+				$term_ids = $wpdb->get_col( $wpdb->prepare( $query, [ $name ] ) );
+
+				foreach ( $term_ids as $term_id ) {
+					$new_data = [];
+
+					foreach ( $taxonomy->fields as $field ) {
+						$new_data[ $field->name ] = Helpers\get_field_data_by_action( $field );
+					}
+
+					$wpdb->update( $wpdb->terms, $new_data, [ 'term_id' => $term_id ] );
+				}
+
+				// TODO: Handle term meta
+				// TODO: Handle term_taxonomy fields?
+			}
+		}
+
 		if ( ! empty( $config->truncate_tables ) ) {
 
 			foreach ( $config->truncate_tables as $table ) {

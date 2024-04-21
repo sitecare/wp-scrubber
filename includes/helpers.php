@@ -334,6 +334,11 @@ function get_fake_data( $type ) {
 
 		case 'sentence':
 			$data = substr( $faker->sentence(), 0, -1 );
+			break;
+
+		case 'word':
+			$data = $faker->word();
+			break;
 	}
 
 	return $data;
