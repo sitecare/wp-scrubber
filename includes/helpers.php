@@ -323,6 +323,7 @@ function get_fake_data( $type ) {
 	$data = null;
 	$faker = \Faker\Factory::create();
 
+	// TODO: call type as magic method.
 	switch ( $type ) {
 		case 'name':
 			$data = $faker->name();
@@ -338,6 +339,10 @@ function get_fake_data( $type ) {
 
 		case 'word':
 			$data = $faker->word();
+			break;
+
+		case 'url':
+			$data = $faker->url();
 			break;
 	}
 

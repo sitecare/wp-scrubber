@@ -157,6 +157,8 @@ class Command extends \WP_CLI_Command {
 	public function config( $args, $assoc_args ) {
 		global $wpdb;
 
+		// var_dump( Helpers\get_database_size() );
+
 		// TODO: Allow path override in args
 
 		$config_path = trailingslashit( WP_CONTENT_DIR ) . 'wp-scrubber.json';
@@ -259,6 +261,27 @@ class Command extends \WP_CLI_Command {
 				}
 			}
 		}
+
+		if ( ! empty( $config->custom_tables ) ) {
+
+			foreach ( $config->custom_tables as $table ) {
+				$name  = $table->name;
+				$pk    = $table->primary_key;
+				$query = "SELECT {$pk} FROM {$name}";
+				$ids   = $wpdb->get_col( $query );
+
+				foreach ( $ids as $id ) {
+					$new_data = [];
+
+					foreach ( $table->columns as $field ) {
+						$new_data[ $field->name ] = \TenUpWPScrubber\Helpers\get_field_data_by_action( $field );
+					}
+
+					$wpdb->update( $name, $new_data, [ $pk => $id ] );
+				}
+			}
+		}
+
 	}
 
 }
