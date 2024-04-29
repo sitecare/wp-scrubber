@@ -180,11 +180,36 @@ class Command extends \WP_CLI_Command {
 			foreach ( $user_ids as $user_id ) {
 				$new_data = [];
 
-				foreach ( $config->user_data as $field ) {
+				foreach ( $config->user_data->fields as $field ) {
 					$new_data[ $field->name ] = Helpers\get_field_data_by_action( $field );
 				}
 
 				$wpdb->update( $wpdb->users, $new_data, [ 'ID' => $user_id ] );
+
+				foreach ( $config->user_data->user_meta as $meta_field ) {
+					$meta_key = $meta_field->key;
+
+					if ( 'remove' === $meta_field->action ) {
+						$wpdb->delete(
+							$wpdb->usermeta,
+							[
+								'user_id'  => $user_id,
+								'meta_key' => $meta_key,
+							]
+						);
+					} else {
+						$meta_value = Helpers\get_field_data_by_action( $meta_field );
+
+						$wpdb->update(
+							$wpdb->usermeta,
+							[ 'meta_value' => $meta_value ],
+							[
+								'user_id'  => $user_id,
+								'meta_key' => $meta_key,
+							]
+						);
+					}
+				}
 			}
 
 			// TODO: Handle user meta
