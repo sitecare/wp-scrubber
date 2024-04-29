@@ -210,7 +210,7 @@ class Command extends \WP_CLI_Command {
 					$wpdb->update( $wpdb->posts, $new_data, [ 'ID' => $post_id ] );
 
 					foreach ( $post_type->post_meta as $meta_field ) {
-						$meta_key   = $meta_field->key;
+						$meta_key = $meta_field->key;
 
 						if ( 'remove' === $meta_field->action ) {
 							$wpdb->delete(
@@ -257,9 +257,33 @@ class Command extends \WP_CLI_Command {
 					}
 
 					$wpdb->update( $wpdb->terms, $new_data, [ 'term_id' => $term_id ] );
+
+					foreach ( $taxonomy->term_meta as $meta_field ) {
+						$meta_key = $meta_field->key;
+
+						if ( 'remove' === $meta_field->action ) {
+							$wpdb->delete(
+								$wpdb->termmeta,
+								[
+									'term_id'  => $term_id,
+									'meta_key' => $meta_key,
+								]
+							);
+						} else {
+							$meta_value = Helpers\get_field_data_by_action( $meta_field );
+
+							$wpdb->update(
+								$wpdb->termmeta,
+								[ 'meta_value' => $meta_value ],
+								[
+									'term_id'  => $term_id,
+									'meta_key' => $meta_key,
+								]
+							);
+						}
+					}
 				}
 
-				// TODO: Handle term meta
 				// TODO: Handle term_taxonomy fields?
 			}
 		}
