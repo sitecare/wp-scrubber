@@ -211,7 +211,6 @@ class Command extends \WP_CLI_Command {
 
 					foreach ( $post_type->post_meta as $meta_field ) {
 						$meta_key   = $meta_field->key;
-						$meta_value = Helpers\get_field_data_by_action( $meta_field );
 
 						if ( 'remove' === $meta_field->action ) {
 							$wpdb->delete(
@@ -222,6 +221,8 @@ class Command extends \WP_CLI_Command {
 								]
 							);
 						} else {
+							$meta_value = Helpers\get_field_data_by_action( $meta_field );
+
 							$wpdb->update(
 								$wpdb->postmeta,
 								[ 'meta_value' => $meta_value ],
@@ -234,7 +235,6 @@ class Command extends \WP_CLI_Command {
 					}
 				}
 
-				// TODO: Handle post meta
 				// TODO: Handle post revisions?
 			}
 		}
