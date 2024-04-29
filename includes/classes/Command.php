@@ -157,8 +157,6 @@ class Command extends \WP_CLI_Command {
 	public function config( $args, $assoc_args ) {
 		global $wpdb;
 
-		// var_dump( Helpers\get_database_size() );
-
 		// TODO: Allow path override in args
 
 		$config_path = trailingslashit( WP_CONTENT_DIR ) . 'wp-scrubber.json';
@@ -210,6 +208,30 @@ class Command extends \WP_CLI_Command {
 					}
 
 					$wpdb->update( $wpdb->posts, $new_data, [ 'ID' => $post_id ] );
+
+					foreach ( $post_type->post_meta as $meta_field ) {
+						$meta_key   = $meta_field->key;
+						$meta_value = Helpers\get_field_data_by_action( $meta_field );
+
+						if ( 'remove' === $meta_field->action ) {
+							$wpdb->delete(
+								$wpdb->postmeta,
+								[
+									'post_id'  => $post_id,
+									'meta_key' => $meta_key,
+								]
+							);
+						} else {
+							$wpdb->update(
+								$wpdb->postmeta,
+								[ 'meta_value' => $meta_value ],
+								[
+									'post_id'  => $post_id,
+									'meta_key' => $meta_key,
+								]
+							);
+						}
+					}
 				}
 
 				// TODO: Handle post meta

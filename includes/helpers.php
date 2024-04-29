@@ -344,6 +344,10 @@ function get_fake_data( $type ) {
 		case 'url':
 			$data = $faker->url();
 			break;
+
+		case 'randomDigit':
+			$data = $faker->randomDigit();
+			break;
 	}
 
 	return $data;
