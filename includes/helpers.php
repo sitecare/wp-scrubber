@@ -328,7 +328,7 @@ function get_dummy_users() {
  * @return mixed The generated fake data.
  */
 function get_fake_data( string $type ): mixed {
-	$data = null;
+	$data  = null;
 	$faker = \Faker\Factory::create();
 
 	// TODO: call type as magic method.
@@ -387,4 +387,60 @@ function get_field_data_by_action( object $field ): mixed {
 	}
 
 	return $data;
+}
+
+/**
+ * Scrub the meta field.
+ *
+ * @param int    $oject_id    The object ID.
+ * @param string $meta_key    The meta key.
+ * @param string $object_type The object type.
+ *
+ * @return void
+ */
+function scrub_meta_field( int $oject_id, object $field_config, string $object_type = 'post' ): void {
+	global $wpdb;
+
+	// TODO: validate config object.
+	$meta_key = $field_config->key;
+
+	switch ( $object_type ) {
+		case 'user':
+			$table      = $wpdb->usermeta;
+			$object_key = 'user_id';
+			break;
+
+		case 'term':
+			$table      = $wpdb->termmeta;
+			$object_key = 'term_id';
+			break;
+
+		case 'post':
+		default:
+			$table      = $wpdb->postmeta;
+			$object_key = 'post_id';
+			break;
+	}
+
+	if ( 'remove' === $field_config->action ) {
+		$wpdb->delete(
+			$table,
+			[
+				$object_key => $object_id,
+				'meta_key'  => $meta_key,
+			]
+		);
+
+	} else {
+		$meta_value = Helpers\get_field_data_by_action( $field_config );
+
+		$wpdb->update(
+			$table,
+			[ 'meta_value' => $meta_value ],
+			[
+				$object_key => $object_id,
+				'meta_key'  => $meta_key,
+			]
+		);
+	}
 }
