@@ -477,3 +477,44 @@ function scrub_meta_field( int $oject_id, object $field_config, string $object_t
 		);
 	}
 }
+
+/**
+ * Scrubs an object by type.
+ *
+ * @param int    $object_id     The ID of the object to scrub.
+ * @param object $object_config The configuration object for the object.
+ * @param string $object_type   The type of the object. Defaults to 'post'.
+ *
+ * @return void
+ */
+function scrub_object_by_type( int $object_id, object $object_config, string $object_type = 'post' ) {
+	$new_data = [];
+
+	switch ( $object_type ) {
+		case 'user':
+			$table = $wpdb->users;
+			$pk	   = 'ID';
+			break;
+
+		case 'term':
+			$table = $wpdb->terms;
+			$pk	   = 'term_id';
+			break;
+
+		case 'post':
+		default:
+			$table = $wpdb->posts;
+			$pk	   = 'ID';
+			break;
+	}
+
+	foreach ( $object_config->fields as $field ) {
+		$new_data[ $field->name ] = Helpers\get_field_data_by_action( $field );
+	}
+
+	$wpdb->update( $table, $new_data, [ $pk => $object_id ] );
+
+	foreach ( $config->meta as $meta_field ) {
+		Helpers\scrub_meta_field( $post_id, $meta_field, 'post' );
+	}
+}
