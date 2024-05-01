@@ -506,15 +506,20 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
 			break;
 	}
 
-	$new_data = [];
+	if ( ! empty( $object_config->fields ) ) {
+		$new_data = [];
 
-	foreach ( $object_config->fields as $field ) {
-		$new_data[ $field->name ] = Helpers\get_field_data_by_action( $field );
+		foreach ( $object_config->fields as $field ) {
+			$new_data[ $field->name ] = Helpers\get_field_data_by_action( $field );
+		}
+
+		$wpdb->update( $table, $new_data, [ $pk => $object_id ] );
 	}
 
-	$wpdb->update( $table, $new_data, [ $pk => $object_id ] );
+	if ( ! empty( $object_config->meta_fields ) ) {
 
-	foreach ( $config->meta_fields as $meta_field ) {
-		Helpers\scrub_meta_field( $post_id, $meta_field, 'post' );
+		foreach ( $object_config->meta_fields as $meta_field ) {
+			Helpers\scrub_meta_field( $object_id, $meta_field, $object_type );
+		}
 	}
 }
