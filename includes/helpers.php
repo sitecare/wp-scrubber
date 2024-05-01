@@ -319,6 +319,39 @@ function get_dummy_users() {
 	return $users;
 }
 
+/**
+ * Retrieves an array of all user IDs from the database.
+ *
+ * @return array An array of user IDs.
+ */
+function get_all_user_ids() {
+	global $wpdb;
+	return $wpdb->get_col( "SELECT ID FROM {$wpdb->users}" );
+}
+
+/**
+ * Retrieves an array of all post IDs of a given post type.
+ *
+ * @param string $post_type The post type to retrieve post IDs for.
+ *
+ * @return array An array of post IDs.
+ */
+function get_all_post_ids_of_post_type( $post_type ) {
+	global $wpdb;
+	return $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_type = %s", $post_type ) );
+}
+
+/**
+ * Retrieves an array of all term IDs of a given taxonomy.
+ *
+ * @param string $taxonomy The taxonomy to retrieve term IDs for.
+ *
+ * @return array An array of term IDs.
+ */
+function get_all_term_ids_of_taxonomy( $taxonomy ) {
+	global $wpdb;
+	return $wpdb->get_col( $wpdb->prepare( "SELECT term_id FROM {$wpdb->term_taxonomy} WHERE taxonomy = %s", $taxonomy ) );
+}
 
 /**
  * Get fake data based on the specified type.
