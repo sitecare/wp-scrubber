@@ -211,8 +211,6 @@ class Command extends \WP_CLI_Command {
 					}
 				}
 			}
-
-			// TODO: Handle user meta
 		}
 
 		if ( ! empty( $config->post_types ) ) {
