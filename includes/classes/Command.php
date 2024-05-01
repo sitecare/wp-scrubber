@@ -187,28 +187,7 @@ class Command extends \WP_CLI_Command {
 				$wpdb->update( $wpdb->users, $new_data, [ 'ID' => $user_id ] );
 
 				foreach ( $config->user_data->user_meta as $meta_field ) {
-					$meta_key = $meta_field->key;
-
-					if ( 'remove' === $meta_field->action ) {
-						$wpdb->delete(
-							$wpdb->usermeta,
-							[
-								'user_id'  => $user_id,
-								'meta_key' => $meta_key,
-							]
-						);
-					} else {
-						$meta_value = Helpers\get_field_data_by_action( $meta_field );
-
-						$wpdb->update(
-							$wpdb->usermeta,
-							[ 'meta_value' => $meta_value ],
-							[
-								'user_id'  => $user_id,
-								'meta_key' => $meta_key,
-							]
-						);
-					}
+					Helpers\scrub_meta_field( $user_id, $meta_field, 'user' );
 				}
 			}
 		}
@@ -233,28 +212,7 @@ class Command extends \WP_CLI_Command {
 					$wpdb->update( $wpdb->posts, $new_data, [ 'ID' => $post_id ] );
 
 					foreach ( $post_type->post_meta as $meta_field ) {
-						$meta_key = $meta_field->key;
-
-						if ( 'remove' === $meta_field->action ) {
-							$wpdb->delete(
-								$wpdb->postmeta,
-								[
-									'post_id'  => $post_id,
-									'meta_key' => $meta_key,
-								]
-							);
-						} else {
-							$meta_value = Helpers\get_field_data_by_action( $meta_field );
-
-							$wpdb->update(
-								$wpdb->postmeta,
-								[ 'meta_value' => $meta_value ],
-								[
-									'post_id'  => $post_id,
-									'meta_key' => $meta_key,
-								]
-							);
-						}
+						Helpers\scrub_meta_field( $post_id, $meta_field, 'post' );
 					}
 				}
 
@@ -282,28 +240,7 @@ class Command extends \WP_CLI_Command {
 					$wpdb->update( $wpdb->terms, $new_data, [ 'term_id' => $term_id ] );
 
 					foreach ( $taxonomy->term_meta as $meta_field ) {
-						$meta_key = $meta_field->key;
-
-						if ( 'remove' === $meta_field->action ) {
-							$wpdb->delete(
-								$wpdb->termmeta,
-								[
-									'term_id'  => $term_id,
-									'meta_key' => $meta_key,
-								]
-							);
-						} else {
-							$meta_value = Helpers\get_field_data_by_action( $meta_field );
-
-							$wpdb->update(
-								$wpdb->termmeta,
-								[ 'meta_value' => $meta_value ],
-								[
-									'term_id'  => $term_id,
-									'meta_key' => $meta_key,
-								]
-							);
-						}
+						Helpers\scrub_meta_field( $term_id, $meta_field, 'term' );
 					}
 				}
 
