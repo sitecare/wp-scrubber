@@ -488,8 +488,6 @@ function scrub_meta_field( int $oject_id, object $field_config, string $object_t
  * @return void
  */
 function scrub_object_by_type( int $object_id, object $object_config, string $object_type = 'post' ) {
-	$new_data = [];
-
 	switch ( $object_type ) {
 		case 'user':
 			$table = $wpdb->users;
@@ -508,13 +506,15 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
 			break;
 	}
 
+	$new_data = [];
+
 	foreach ( $object_config->fields as $field ) {
 		$new_data[ $field->name ] = Helpers\get_field_data_by_action( $field );
 	}
 
 	$wpdb->update( $table, $new_data, [ $pk => $object_id ] );
 
-	foreach ( $config->meta as $meta_field ) {
+	foreach ( $config->meta_fields as $meta_field ) {
 		Helpers\scrub_meta_field( $post_id, $meta_field, 'post' );
 	}
 }

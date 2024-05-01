@@ -186,7 +186,7 @@ class Command extends \WP_CLI_Command {
 
 				$wpdb->update( $wpdb->users, $new_data, [ 'ID' => $user_id ] );
 
-				foreach ( $config->user_data->user_meta as $meta_field ) {
+				foreach ( $config->user_data->meta_fields as $meta_field ) {
 					Helpers\scrub_meta_field( $user_id, $meta_field, 'user' );
 				}
 			}
@@ -206,7 +206,7 @@ class Command extends \WP_CLI_Command {
 
 					$wpdb->update( $wpdb->posts, $new_data, [ 'ID' => $post_id ] );
 
-					foreach ( $post_type->post_meta as $meta_field ) {
+					foreach ( $post_type->meta_fields as $meta_field ) {
 						Helpers\scrub_meta_field( $post_id, $meta_field, 'post' );
 					}
 				}
@@ -229,7 +229,7 @@ class Command extends \WP_CLI_Command {
 
 					$wpdb->update( $wpdb->terms, $new_data, [ 'term_id' => $term_id ] );
 
-					foreach ( $taxonomy->term_meta as $meta_field ) {
+					foreach ( $taxonomy->meta_fields as $meta_field ) {
 						Helpers\scrub_meta_field( $term_id, $meta_field, 'term' );
 					}
 				}
