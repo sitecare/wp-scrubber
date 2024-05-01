@@ -319,7 +319,15 @@ function get_dummy_users() {
 	return $users;
 }
 
-function get_fake_data( $type ) {
+
+/**
+ * Get fake data based on the specified type.
+ *
+ * @param string $type The type of fake data to generate.
+ *
+ * @return mixed The generated fake data.
+ */
+function get_fake_data( string $type ): mixed {
 	$data = null;
 	$faker = \Faker\Factory::create();
 
@@ -353,7 +361,14 @@ function get_fake_data( $type ) {
 	return $data;
 }
 
-function get_field_data_by_action( $field ) {
+/**
+ * Retrieves the data for a given field based on its action.
+ *
+ * @param object $field The field object.
+ *
+ * @return mixed The data for the field.
+ */
+function get_field_data_by_action( object $field ): mixed {
 	$data = null;
 
 	switch ( $field->action ) {
