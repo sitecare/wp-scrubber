@@ -178,17 +178,7 @@ class Command extends \WP_CLI_Command {
 			$user_ids = Helpers\get_all_user_ids();
 
 			foreach ( $user_ids as $user_id ) {
-				$new_data = [];
-
-				foreach ( $config->user_data->fields as $field ) {
-					$new_data[ $field->name ] = Helpers\get_field_data_by_action( $field );
-				}
-
-				$wpdb->update( $wpdb->users, $new_data, [ 'ID' => $user_id ] );
-
-				foreach ( $config->user_data->meta_fields as $meta_field ) {
-					Helpers\scrub_meta_field( $user_id, $meta_field, 'user' );
-				}
+				Helpers\scrub_object_by_type( $user_id, $config->user_data, 'user' );
 			}
 		}
 
@@ -198,17 +188,7 @@ class Command extends \WP_CLI_Command {
 				$post_ids = Helpers\get_all_post_ids_of_post_type( $post_type->name );
 
 				foreach ( $post_ids as $post_id ) {
-					$new_data = [];
-
-					foreach ( $post_type->fields as $field ) {
-						$new_data[ $field->name ] = Helpers\get_field_data_by_action( $field );
-					}
-
-					$wpdb->update( $wpdb->posts, $new_data, [ 'ID' => $post_id ] );
-
-					foreach ( $post_type->meta_fields as $meta_field ) {
-						Helpers\scrub_meta_field( $post_id, $meta_field, 'post' );
-					}
+					Helpers\scrub_object_by_type( $post_id, $post_type, 'post' );
 				}
 
 				// TODO: Handle post revisions?
@@ -221,17 +201,7 @@ class Command extends \WP_CLI_Command {
 				$term_ids = Helpers\get_all_term_ids_of_taxonomy( $taxonomy->name );
 
 				foreach ( $term_ids as $term_id ) {
-					$new_data = [];
-
-					foreach ( $taxonomy->fields as $field ) {
-						$new_data[ $field->name ] = Helpers\get_field_data_by_action( $field );
-					}
-
-					$wpdb->update( $wpdb->terms, $new_data, [ 'term_id' => $term_id ] );
-
-					foreach ( $taxonomy->meta_fields as $meta_field ) {
-						Helpers\scrub_meta_field( $term_id, $meta_field, 'term' );
-					}
+					Helpers\scrub_object_by_type( $term_id, $taxonomy, 'term' );
 				}
 
 				// TODO: Handle term_taxonomy fields?
