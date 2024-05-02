@@ -342,6 +342,28 @@ function get_all_post_ids_of_post_type( $post_type ) {
 }
 
 /**
+ * Retrieves an array of all revision IDs of a given post type.
+ *
+ * @param array $post_ids The post IDs to retrieve revision IDs for.
+ *
+ * @return array An array of revision IDs.
+ */
+function get_all_revision_ids_from_post_ids( $post_ids ) {
+	global $wpdb;
+
+	$post_ids   = array_map( 'esc_sql', $post_ids );
+	$post_ids   = array_map( 'intval', $post_ids );
+	$ids_string = implode( ',', $post_ids );
+
+	$query = "SELECT *
+		FROM wp_posts
+		WHERE post_type = 'revision'
+		AND post_parent IN (${ids_string});";
+
+	return $wpdb->get_col( $query );
+}
+
+/**
  * Retrieves an array of all term IDs of a given taxonomy.
  *
  * @param string $taxonomy The taxonomy to retrieve term IDs for.
@@ -465,7 +487,7 @@ function scrub_meta_field( int $oject_id, object $field_config, string $object_t
 		);
 
 	} else {
-		$meta_value = Helpers\get_field_data_by_action( $field_config );
+		$meta_value = get_field_data_by_action( $field_config );
 
 		$wpdb->update(
 			$table,
@@ -488,6 +510,8 @@ function scrub_meta_field( int $oject_id, object $field_config, string $object_t
  * @return void
  */
 function scrub_object_by_type( int $object_id, object $object_config, string $object_type = 'post' ) {
+	global $wpdb;
+
 	switch ( $object_type ) {
 		case 'user':
 			$table = $wpdb->users;
@@ -510,7 +534,7 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
 		$new_data = [];
 
 		foreach ( $object_config->fields as $field ) {
-			$new_data[ $field->name ] = Helpers\get_field_data_by_action( $field );
+			$new_data[ $field->name ] = get_field_data_by_action( $field );
 		}
 
 		$wpdb->update( $table, $new_data, [ $pk => $object_id ] );
@@ -519,7 +543,7 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
 	if ( ! empty( $object_config->meta_fields ) ) {
 
 		foreach ( $object_config->meta_fields as $meta_field ) {
-			Helpers\scrub_meta_field( $object_id, $meta_field, $object_type );
+			scrub_meta_field( $object_id, $meta_field, $object_type );
 		}
 	}
 }

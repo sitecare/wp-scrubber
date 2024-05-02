@@ -201,6 +201,7 @@ class Command extends WP_CLI_Command {
 				}
 
 				// TODO: Handle post revisions?
+				$revision_ids = Helpers\get_all_revision_ids_from_post_ids( $post_ids );
 			}
 		}
 
@@ -222,8 +223,7 @@ class Command extends WP_CLI_Command {
 			WP_CLI::log( 'Truncating tables' );
 
 			foreach ( $config->truncate_tables as $table ) {
-				// phpcs:ignore WordPress.DB.PreparedSQL
-				$wpdb->query( "TRUNCATE TABLE {$table}" );
+				$wpdb->query( "TRUNCATE TABLE {$table}" ); // phpcs:ignore WordPress.DB.PreparedSQL
 			}
 		}
 
