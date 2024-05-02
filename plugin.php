@@ -30,7 +30,8 @@ if ( file_exists( TENUP_WP_SCRUBBER_PATH . 'vendor/autoload.php' ) ) {
 	require_once TENUP_WP_SCRUBBER_PATH . 'vendor/autoload.php';
 } else {
 	spl_autoload_register(
-		function( $class ) {
+		// phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames
+		function ( $class ) {
 			// project-specific namespace prefix.
 			$prefix = 'TenUpWPScrubber\\';
 

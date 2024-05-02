@@ -13,7 +13,8 @@ namespace TenUpWPScrubber\Core;
  * @return void
  */
 function setup() {
-	$n = function( $function ) {
+	// phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames
+	$n = function ( $function ) {
 		return __NAMESPACE__ . "\\$function";
 	};
 

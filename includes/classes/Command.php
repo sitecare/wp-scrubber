@@ -169,7 +169,7 @@ class Command extends \WP_CLI_Command {
 			\WP_CLI::error( 'The wp-scrubber.json file is not readable, please check/update the file permissions.' );
 		}
 
-		$config_json = file_get_contents( $config_path );
+		$config_json = file_get_contents( $config_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 		$config      = json_decode( $config_json );
 
 		// TODO: Validate config before continuing
@@ -211,6 +211,7 @@ class Command extends \WP_CLI_Command {
 		if ( ! empty( $config->truncate_tables ) ) {
 
 			foreach ( $config->truncate_tables as $table ) {
+				// phpcs:ignore WordPress.DB.PreparedSQL
 				$wpdb->query( "TRUNCATE TABLE {$table}" );
 			}
 		}
@@ -234,7 +235,7 @@ class Command extends \WP_CLI_Command {
 				$name  = $table->name;
 				$pk    = $table->primary_key;
 				$query = "SELECT {$pk} FROM {$name}";
-				$ids   = $wpdb->get_col( $query );
+				$ids   = $wpdb->get_col( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 				foreach ( $ids as $id ) {
 					$new_data = [];
@@ -247,7 +248,5 @@ class Command extends \WP_CLI_Command {
 				}
 			}
 		}
-
 	}
-
 }

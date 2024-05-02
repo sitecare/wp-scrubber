@@ -296,7 +296,7 @@ function get_dummy_users() {
 
 	if ( empty( $users ) ) {
 		// We use __DIR__ here because this file is loaded via Composer outside the context of plugin constants
-		$file = fopen( __DIR__ . '/data/users.csv', 'r' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fopen
+		$file = fopen( __DIR__ . '/data/users.csv', 'r' ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 
 		$line = fgetcsv( $file );
 		while ( false !== $line ) {
@@ -313,7 +313,7 @@ function get_dummy_users() {
 			$line = fgetcsv( $file );
 		}
 
-		fclose( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fclose
+		fclose( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 	}
 
 	return $users;
@@ -425,9 +425,9 @@ function get_field_data_by_action( object $field ): mixed {
 /**
  * Scrub the meta field.
  *
- * @param int    $oject_id    The object ID.
- * @param string $meta_key    The meta key.
- * @param string $object_type The object type.
+ * @param int    $oject_id     The object ID.
+ * @param object $field_config The field configuration object.
+ * @param string $object_type  The object type.
  *
  * @return void
  */
@@ -491,18 +491,18 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
 	switch ( $object_type ) {
 		case 'user':
 			$table = $wpdb->users;
-			$pk	   = 'ID';
+			$pk    = 'ID';
 			break;
 
 		case 'term':
 			$table = $wpdb->terms;
-			$pk	   = 'term_id';
+			$pk    = 'term_id';
 			break;
 
 		case 'post':
 		default:
 			$table = $wpdb->posts;
-			$pk	   = 'ID';
+			$pk    = 'ID';
 			break;
 	}
 
