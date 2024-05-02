@@ -7,10 +7,13 @@
 
 namespace TenUpWPScrubber;
 
+use WP_CLI;
+use WP_CLI_Command;
+
 /**
  * Register migration commands.
  */
-class Command extends \WP_CLI_Command {
+class Command extends WP_CLI_Command {
 
 
 	/**
@@ -58,22 +61,22 @@ class Command extends \WP_CLI_Command {
 
 		// Check the environment. Do not allow
 		if ( 'production' === wp_get_environment_type() && ! apply_filters( 'wp_scrubber_allow_on_production', false ) ) {
-			\WP_CLI::error( 'This command cannot be run on a production environment.' );
+			WP_CLI::error( 'This command cannot be run on a production environment.' );
 		}
 
 		// Limit the plugin on sites with large database sizes.
 		$size_limit = apply_filters( 'wp_scrubber_db_size_limit', 2000 );
 		if ( $size_limit < Helpers\get_database_size() && empty( $assoc_args['ignore-size-limit'] ) ) {
-			\WP_CLI::error( "This database is larger than {$size_limit}MB. Ignore this warning with `--ignore-size-limit`" );
+			WP_CLI::error( "This database is larger than {$size_limit}MB. Ignore this warning with `--ignore-size-limit`" );
 		}
 
 		// Run through the scrubbing process.
 		if ( in_array( 'users', $modes, true ) ) {
-			Helpers\scrub_users( $allowed_domains, $allowed_emails, '\WP_CLI::log' );
+			Helpers\scrub_users( $allowed_domains, $allowed_emails, 'WP_CLI::log' );
 		}
 
 		if ( in_array( 'comments', $modes, true ) ) {
-			Helpers\scrub_comments( '\WP_CLI::log' );
+			Helpers\scrub_comments( 'WP_CLI::log' );
 		}
 
 		// Flush the cache.
@@ -155,7 +158,7 @@ class Command extends \WP_CLI_Command {
 	 * @return void
 	 *
 	 * @alias from-config
-s	 */
+	 */
 	public function from_config( $args, $assoc_args ) {
 		global $wpdb;
 
@@ -165,11 +168,11 @@ s	 */
 		$config_path = trailingslashit( WP_CONTENT_DIR ) . 'wp-scrubber.json';
 
 		if ( ! file_exists( $config_path ) ) {
-			\WP_CLI::error( 'Unable to locate wp-scrubber.json in the wp-content/ directory.' );
+			WP_CLI::error( 'Unable to locate wp-scrubber.json in the wp-content/ directory.' );
 		}
 
 		if ( ! is_readable( $config_path ) ) {
-			\WP_CLI::error( 'The wp-scrubber.json file is not readable, please check/update the file permissions.' );
+			WP_CLI::error( 'The wp-scrubber.json file is not readable, please check/update the file permissions.' );
 		}
 
 		$config_json = file_get_contents( $config_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
@@ -178,6 +181,8 @@ s	 */
 		// TODO: Validate config before continuing
 
 		if ( ! empty( $config->user_data ) ) {
+			WP_CLI::log( 'Scrubbing user data' );
+
 			$user_ids = Helpers\get_all_user_ids();
 
 			foreach ( $user_ids as $user_id ) {
@@ -186,6 +191,7 @@ s	 */
 		}
 
 		if ( ! empty( $config->post_types ) ) {
+			WP_CLI::log( 'Scrubbing post type data' );
 
 			foreach ( $config->post_types as $post_type ) {
 				$post_ids = Helpers\get_all_post_ids_of_post_type( $post_type->name );
@@ -199,6 +205,7 @@ s	 */
 		}
 
 		if ( ! empty( $config->taxonomies ) ) {
+			WP_CLI::log( 'Scrubbing taxonomy data' );
 
 			foreach ( $config->taxonomies as $taxonomy ) {
 				$term_ids = Helpers\get_all_term_ids_of_taxonomy( $taxonomy->name );
@@ -212,6 +219,7 @@ s	 */
 		}
 
 		if ( ! empty( $config->truncate_tables ) ) {
+			WP_CLI::log( 'Truncating tables' );
 
 			foreach ( $config->truncate_tables as $table ) {
 				// phpcs:ignore WordPress.DB.PreparedSQL
@@ -220,6 +228,7 @@ s	 */
 		}
 
 		if ( ! empty( $config->options ) ) {
+			WP_CLI::log( 'Scrubbing option data' );
 
 			foreach ( $config->options as $option ) {
 
@@ -233,6 +242,7 @@ s	 */
 		}
 
 		if ( ! empty( $config->custom_tables ) ) {
+			WP_CLI::log( 'Scrubbing custom table data' );
 
 			foreach ( $config->custom_tables as $table ) {
 				$name  = $table->name;
@@ -251,5 +261,7 @@ s	 */
 				}
 			}
 		}
+
+		WP_CLI::success( 'Scrubbing complete!' );
 	}
 }
