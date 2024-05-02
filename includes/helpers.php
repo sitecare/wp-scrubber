@@ -326,7 +326,12 @@ function get_dummy_users() {
  */
 function get_all_user_ids() {
 	global $wpdb;
-	return $wpdb->get_col( "SELECT ID FROM {$wpdb->users}" );
+
+	$query = "SELECT ID
+		FROM {$wpdb->users}";
+
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	return $wpdb->get_col( $query );
 }
 
 /**
@@ -338,7 +343,13 @@ function get_all_user_ids() {
  */
 function get_all_post_ids_of_post_type( $post_type ) {
 	global $wpdb;
-	return $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_type = %s", $post_type ) );
+
+	$query = "SELECT ID
+		FROM {$wpdb->posts}
+		WHERE post_type = %s";
+
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	return $wpdb->get_col( $wpdb->prepare( $query, $post_type ) );
 }
 
 /**
@@ -360,6 +371,7 @@ function get_all_revision_ids_from_post_ids( $post_ids ) {
 		WHERE post_type = 'revision'
 		AND post_parent IN (${ids_string});";
 
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	return $wpdb->get_col( $query );
 }
 
@@ -372,7 +384,13 @@ function get_all_revision_ids_from_post_ids( $post_ids ) {
  */
 function get_all_term_ids_of_taxonomy( $taxonomy ) {
 	global $wpdb;
-	return $wpdb->get_col( $wpdb->prepare( "SELECT term_id FROM {$wpdb->term_taxonomy} WHERE taxonomy = %s", $taxonomy ) );
+
+	$query = "SELECT term_id
+		FROM {$wpdb->term_taxonomy}
+		WHERE taxonomy = %s";
+
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	return $wpdb->get_col( $wpdb->prepare( $query, $taxonomy ) );
 }
 
 /**
