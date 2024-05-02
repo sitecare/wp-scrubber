@@ -234,9 +234,13 @@ class Command extends WP_CLI_Command {
 
 				// TODO: Use wpdb for direct queries?
 				if ( 'remove' === $option->action ) {
-					delete_option( $option->name );
+					$wpdb->delete( $wpdb->options, [ 'option_name' => $option->name ] );
 				} else {
-					update_option( $option->name, Helpers\get_field_data_by_action( $option ) );
+					$wpdb->update(
+						$wpdb->options,
+						[ 'option_value' => Helpers\get_field_data_by_action( $option ) ],
+						[ 'option_name' => $option->name ]
+					);
 				}
 			}
 		}
