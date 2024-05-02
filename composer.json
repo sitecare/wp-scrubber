@@ -13,7 +13,7 @@
     "fakerphp/faker": "^1.23"
   },
   "require-dev": {
-    "10up/phpcs-composer": "dev-master"
+    "10up/phpcs-composer": "^3.0.0"
   },
   "scripts": {
     "lint": "phpcs .",
