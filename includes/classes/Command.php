@@ -153,11 +153,14 @@ class Command extends \WP_CLI_Command {
 	 * @param array $args       Positional arguments passed to the command.
 	 * @param array $assoc_args Associative arguments passed to the command.
 	 * @return void
-	 */
-	public function config( $args, $assoc_args ) {
+	 *
+	 * @alias from-config
+s	 */
+	public function from_config( $args, $assoc_args ) {
 		global $wpdb;
 
 		// TODO: Allow path override in args
+		// TODO: handle size limit arg
 
 		$config_path = trailingslashit( WP_CONTENT_DIR ) . 'wp-scrubber.json';
 
