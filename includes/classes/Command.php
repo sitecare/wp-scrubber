@@ -202,6 +202,10 @@ class Command extends WP_CLI_Command {
 
 				// TODO: Handle post revisions?
 				$revision_ids = Helpers\get_all_revision_ids_from_post_ids( $post_ids );
+
+				foreach ( $revision_ids as $revision_id ) {
+					Helpers\scrub_object_by_type( $revision_id, $post_type, 'revision' );
+				}
 			}
 		}
 

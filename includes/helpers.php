@@ -541,6 +541,7 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
 			$pk    = 'term_id';
 			break;
 
+		case 'revision':
 		case 'post':
 		default:
 			$table = $wpdb->posts;
@@ -558,7 +559,7 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
 		$wpdb->update( $table, $new_data, [ $pk => $object_id ] );
 	}
 
-	if ( ! empty( $object_config->meta_fields ) ) {
+	if ( 'revision' !== $object_type && ! empty( $object_config->meta_fields ) ) {
 
 		foreach ( $object_config->meta_fields as $meta_field ) {
 			scrub_meta_field( $object_id, $meta_field, $object_type );
