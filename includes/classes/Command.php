@@ -185,7 +185,12 @@ class Command extends WP_CLI_Command {
 			$progress = \WP_CLI\Utils\make_progress_bar( 'Scrubbing user data', count( $user_ids ) );
 
 			foreach ( $user_ids as $user_id ) {
-				Helpers\scrub_object_by_type( $user_id, $config->user_data, 'user' );
+				$scrub = Helpers\scrub_object_by_type( $user_id, $config->user_data, 'user' );
+
+				if ( false === $scrub || is_wp_error( $scrub ) ) {
+					WP_CLI::error( "Unable to scrub user ID: {$user_id}" );
+				}
+
 				$progress->tick();
 			}
 
@@ -198,7 +203,12 @@ class Command extends WP_CLI_Command {
 				$progress = \WP_CLI\Utils\make_progress_bar( "Scrubbing {$post_type->name} posts", count( $post_ids ) );
 
 				foreach ( $post_ids as $post_id ) {
-					Helpers\scrub_object_by_type( $post_id, $post_type, 'post' );
+					$scrub = Helpers\scrub_object_by_type( $post_id, $post_type, 'post' );
+
+					if ( false === $scrub || is_wp_error( $scrub ) ) {
+						WP_CLI::log( "Unable to scrub post ID: {$post_id}" );
+					}
+
 					$progress->tick();
 				}
 
@@ -208,7 +218,12 @@ class Command extends WP_CLI_Command {
 				$progress     = \WP_CLI\Utils\make_progress_bar( "Scrubbing {$post_type->name} revisions", count( $revision_ids ) );
 
 				foreach ( $revision_ids as $revision_id ) {
-					Helpers\scrub_object_by_type( $revision_id, $post_type, 'revision' );
+					$scrub = Helpers\scrub_object_by_type( $revision_id, $post_type, 'revision' );
+
+					if ( false === $scrub || is_wp_error( $scrub ) ) {
+						WP_CLI::error( "Unable to scrub revision ID: {$revision_id}" );
+					}
+
 					$progress->tick();
 				}
 
@@ -222,7 +237,12 @@ class Command extends WP_CLI_Command {
 				$progress = \WP_CLI\Utils\make_progress_bar( "Scrubbing {$taxonomy->name} terms", count( $term_ids ) );
 
 				foreach ( $term_ids as $term_id ) {
-					Helpers\scrub_object_by_type( $term_id, $taxonomy, 'term' );
+					$scrub = Helpers\scrub_object_by_type( $term_id, $taxonomy, 'term' );
+
+					if ( false === $scrub || is_wp_error( $scrub ) ) {
+						WP_CLI::error( "Unable to scrub term ID: {$term_id}" );
+					}
+
 					$progress->tick();
 				}
 
