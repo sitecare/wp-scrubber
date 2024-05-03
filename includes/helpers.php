@@ -436,7 +436,6 @@ function get_field_data_by_action( object $field ): mixed {
 			break;
 
 		case 'faker':
-		default:
 			$data = get_fake_data( $field->faker_type );
 			break;
 	}
@@ -451,9 +450,9 @@ function get_field_data_by_action( object $field ): mixed {
  * @param object $field_config The field configuration object.
  * @param string $object_type  The object type.
  *
- * @return void
+ * @return bool|\WP_Error The result of the scrub operation. True on success, false or WP_Error on failure.
  */
-function scrub_meta_field( int $object_id, object $field_config, string $object_type = 'post' ): void {
+function scrub_meta_field( int $object_id, object $field_config, string $object_type ): bool|\WP_Error {
 	global $wpdb;
 
 	// TODO: validate config object.
@@ -478,7 +477,7 @@ function scrub_meta_field( int $object_id, object $field_config, string $object_
 	}
 
 	if ( 'remove' === $field_config->action ) {
-		$wpdb->delete(
+		return false !== $wpdb->delete(
 			$table,
 			[
 				$object_key => $object_id,
@@ -489,7 +488,11 @@ function scrub_meta_field( int $object_id, object $field_config, string $object_
 	} else {
 		$meta_value = get_field_data_by_action( $field_config );
 
-		$wpdb->update(
+		if ( is_wp_error( $meta_value ) ) {
+			return $meta_value;
+		}
+
+		return false !== $wpdb->update(
 			$table,
 			[ 'meta_value' => $meta_value ],
 			[
@@ -509,7 +512,7 @@ function scrub_meta_field( int $object_id, object $field_config, string $object_
  *
  * @return void
  */
-function scrub_object_by_type( int $object_id, object $object_config, string $object_type = 'post' ) {
+function scrub_object_by_type( int $object_id, object $object_config, string $object_type ): bool|\WP_Error {
 	global $wpdb;
 
 	switch ( $object_type ) {
@@ -537,6 +540,10 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
 		foreach ( $object_config->fields as $field ) {
 			$new_value = get_field_data_by_action( $field );
 
+			if ( is_wp_error( $new_value ) ) {
+				return $new_value;
+			}
+
 			if ( 'term' === $object_type && 'description' === $field->name ) {
 				$wpdb->update(
 					$wpdb->term_taxonomy,
@@ -558,7 +565,13 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
 	if ( 'revision' !== $object_type && ! empty( $object_config->meta_fields ) ) {
 
 		foreach ( $object_config->meta_fields as $meta_field ) {
-			scrub_meta_field( $object_id, $meta_field, $object_type );
+			$result = scrub_meta_field( $object_id, $meta_field, $object_type );
+
+			if ( false === $result || is_wp_error( $result ) ) {
+				return $result;
+			}
 		}
 	}
+
+	return true;
 }
