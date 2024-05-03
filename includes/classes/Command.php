@@ -181,57 +181,70 @@ class Command extends WP_CLI_Command {
 		// TODO: Validate config before continuing
 
 		if ( ! empty( $config->user_data ) ) {
-			WP_CLI::log( 'Scrubbing user data' );
-
 			$user_ids = Helpers\get_all_user_ids();
+			$progress = \WP_CLI\Utils\make_progress_bar( 'Scrubbing user data', count( $user_ids ) );
 
 			foreach ( $user_ids as $user_id ) {
 				Helpers\scrub_object_by_type( $user_id, $config->user_data, 'user' );
+				$progress->tick();
 			}
+
+			$progress->finish();
 		}
 
 		if ( ! empty( $config->post_types ) ) {
-			WP_CLI::log( 'Scrubbing post type data' );
-
 			foreach ( $config->post_types as $post_type ) {
 				$post_ids = Helpers\get_all_post_ids_of_post_type( $post_type->name );
+				$progress = \WP_CLI\Utils\make_progress_bar( "Scrubbing {$post_type->name} posts", count( $post_ids ) );
 
 				foreach ( $post_ids as $post_id ) {
 					Helpers\scrub_object_by_type( $post_id, $post_type, 'post' );
+					$progress->tick();
 				}
 
+				$progress->finish();
+
 				$revision_ids = Helpers\get_all_revision_ids_from_post_ids( $post_ids );
+				$progress     = \WP_CLI\Utils\make_progress_bar( "Scrubbing {$post_type->name} revisions", count( $revision_ids ) );
 
 				foreach ( $revision_ids as $revision_id ) {
 					Helpers\scrub_object_by_type( $revision_id, $post_type, 'revision' );
+					$progress->tick();
 				}
+
+				$progress->finish();
 			}
 		}
 
 		if ( ! empty( $config->taxonomies ) ) {
-			WP_CLI::log( 'Scrubbing taxonomy data' );
-
 			foreach ( $config->taxonomies as $taxonomy ) {
 				$term_ids = Helpers\get_all_term_ids_of_taxonomy( $taxonomy->name );
+				$progress = \WP_CLI\Utils\make_progress_bar( "Scrubbing {$taxonomy->name} terms", count( $term_ids ) );
 
 				foreach ( $term_ids as $term_id ) {
 					Helpers\scrub_object_by_type( $term_id, $taxonomy, 'term' );
+					$progress->tick();
 				}
+
+				$progress->finish();
 
 				// TODO: Handle term_taxonomy fields?
 			}
 		}
 
 		if ( ! empty( $config->truncate_tables ) ) {
-			WP_CLI::log( 'Truncating tables' );
+			$progress = \WP_CLI\Utils\make_progress_bar( 'Truncating tables', count( $config->truncate_tables ) );
 
 			foreach ( $config->truncate_tables as $table ) {
 				$wpdb->query( "TRUNCATE TABLE {$table}" ); // phpcs:ignore WordPress.DB.PreparedSQL
+				$progress->tick();
 			}
+
+			$progress->finish();
 		}
 
 		if ( ! empty( $config->options ) ) {
-			WP_CLI::log( 'Scrubbing option data' );
+			$progress = \WP_CLI\Utils\make_progress_bar( 'Scrubbing options', count( $config->options ) );
 
 			foreach ( $config->options as $option ) {
 
@@ -245,17 +258,21 @@ class Command extends WP_CLI_Command {
 						[ 'option_name' => $option->name ]
 					);
 				}
+
+				$progress->tick();
 			}
+
+			$progress->finish();
 		}
 
 		if ( ! empty( $config->custom_tables ) ) {
-			WP_CLI::log( 'Scrubbing custom table data' );
 
 			foreach ( $config->custom_tables as $table ) {
-				$name  = $table->name;
-				$pk    = $table->primary_key;
-				$query = "SELECT {$pk} FROM {$name}";
-				$ids   = $wpdb->get_col( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				$name     = $table->name;
+				$pk       = $table->primary_key;
+				$query    = "SELECT {$pk} FROM {$name}";
+				$ids      = $wpdb->get_col( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				$progress = \WP_CLI\Utils\make_progress_bar( "Scrubbing {$name} table", count( $ids ) );
 
 				foreach ( $ids as $id ) {
 					$new_data = [];
@@ -265,7 +282,11 @@ class Command extends WP_CLI_Command {
 					}
 
 					$wpdb->update( $name, $new_data, [ $pk => $id ] );
+
+					$progress->tick();
 				}
+
+				$progress->finish();
 			}
 		}
 
