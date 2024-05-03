@@ -465,13 +465,13 @@ function get_field_data_by_action( object $field ): mixed {
 /**
  * Scrub the meta field.
  *
- * @param int    $oject_id     The object ID.
+ * @param int    $object_id     The object ID.
  * @param object $field_config The field configuration object.
  * @param string $object_type  The object type.
  *
  * @return void
  */
-function scrub_meta_field( int $oject_id, object $field_config, string $object_type = 'post' ): void {
+function scrub_meta_field( int $object_id, object $field_config, string $object_type = 'post' ): void {
 	global $wpdb;
 
 	// TODO: validate config object.
