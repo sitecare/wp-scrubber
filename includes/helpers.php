@@ -553,7 +553,20 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
 		$new_data = [];
 
 		foreach ( $object_config->fields as $field ) {
-			$new_data[ $field->name ] = get_field_data_by_action( $field );
+			$new_value = get_field_data_by_action( $field );
+
+			if ( 'term' === $object_type && 'description' === $field->name ) {
+				$wpdb->update(
+					$wpdb->term_taxonomy,
+					[ 'description' => $new_value ],
+					[
+						'term_id' => $object_id,
+						'taxonomy' => $object_config->name,
+					]
+				);
+			} else {
+				$new_data[ $field->name ] = $new_value;
+			}
 		}
 
 		$wpdb->update( $table, $new_data, [ $pk => $object_id ] );

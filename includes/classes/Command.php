@@ -227,8 +227,6 @@ class Command extends WP_CLI_Command {
 				}
 
 				$progress->finish();
-
-				// TODO: Handle term_taxonomy fields?
 			}
 		}
 
