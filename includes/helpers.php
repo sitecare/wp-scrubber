@@ -401,34 +401,16 @@ function get_all_term_ids_of_taxonomy( $taxonomy ) {
  * @return mixed The generated fake data.
  */
 function get_fake_data( string $type ): mixed {
-	$data  = null;
-	$faker = \Faker\Factory::create();
+	static $faker;
 
-	// TODO: call type as magic method.
-	switch ( $type ) {
-		case 'name':
-			$data = $faker->name();
-			break;
+	if ( ! $faker ) {
+		$faker = \Faker\Factory::create();
+	}
 
-		case 'email':
-			$data = $faker->email();
-			break;
-
-		case 'sentence':
-			$data = substr( $faker->sentence(), 0, -1 );
-			break;
-
-		case 'word':
-			$data = $faker->word();
-			break;
-
-		case 'url':
-			$data = $faker->url();
-			break;
-
-		case 'randomDigit':
-			$data = $faker->randomDigit();
-			break;
+	try {
+		$data = $faker->$type();
+	} catch ( \Exception $e ) {
+		$data = new \WP_Error( 'invalid_faker_type', 'Invalid faker type.' );
 	}
 
 	return $data;
