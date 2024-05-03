@@ -246,9 +246,9 @@ class Command extends WP_CLI_Command {
 
 			foreach ( $config->options as $option ) {
 
-				// TODO: Use wpdb for direct queries?
 				if ( 'remove' === $option->action ) {
 					$wpdb->delete( $wpdb->options, [ 'option_name' => $option->name ] );
+
 				} else {
 					$wpdb->update(
 						$wpdb->options,

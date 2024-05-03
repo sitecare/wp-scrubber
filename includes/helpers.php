@@ -564,6 +564,7 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
 						'taxonomy' => $object_config->name,
 					]
 				);
+
 			} else {
 				$new_data[ $field->name ] = $new_value;
 			}
