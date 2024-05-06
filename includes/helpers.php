@@ -510,7 +510,9 @@ function scrub_meta_field( int $object_id, object $field_config, string $object_
  * @param object $object_config The configuration object for the object.
  * @param string $object_type   The type of the object. Defaults to 'post'.
  *
- * @return void
+ * TODO: add error messages instead of false returns
+ *
+ * @return bool|\WP_Error The result of the scrub operation. True on success, false or WP_Error on failure.
  */
 function scrub_object_by_type( int $object_id, object $object_config, string $object_type ): bool|\WP_Error {
 	global $wpdb;

@@ -206,7 +206,7 @@ class Command extends WP_CLI_Command {
 					$scrub = Helpers\scrub_object_by_type( $post_id, $post_type, 'post' );
 
 					if ( false === $scrub || is_wp_error( $scrub ) ) {
-						WP_CLI::log( "Unable to scrub post ID: {$post_id}" );
+						WP_CLI::error( "Unable to scrub post ID: {$post_id}" );
 					}
 
 					$progress->tick();
