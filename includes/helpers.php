@@ -550,7 +550,7 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
 					$wpdb->term_taxonomy,
 					[ 'description' => $new_value ],
 					[
-						'term_id' => $object_id,
+						'term_id'  => $object_id,
 						'taxonomy' => $object_config->name,
 					]
 				);
