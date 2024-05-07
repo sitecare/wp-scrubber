@@ -455,7 +455,6 @@ function get_field_data_by_action( object $field ): mixed {
 function scrub_meta_field( int $object_id, object $field_config, string $object_type ): bool|\WP_Error {
 	global $wpdb;
 
-	// TODO: validate config object.
 	$meta_key = $field_config->key;
 
 	switch ( $object_type ) {
