@@ -11,16 +11,16 @@
             ],
             "meta_fields": [
                 {
-                    "key": "_edit_lock",
+                    "key": "sensitive_meta_to_remove",
                     "action": "remove"
                 },
                 {
-                    "key": "_edit_last",
+                    "key": "sensitive_meta_to_replace",
                     "action": "replace",
                     "value": "1"
                 },
                 {
-                    "key": "_yoast_wpseo_content_score",
+                    "key": "sensitive_meta_to_fake",
                     "action": "faker",
                     "faker_type": "randomDigit"
                 }
@@ -29,7 +29,7 @@
     ],
     "taxonomies": [
         {
-            "name": "committee",
+            "name": "example_tax_name",
             "fields": [
                 {
                     "name": "name",
@@ -44,7 +44,7 @@
             ],
             "meta_fields": [
                 {
-                    "key": "committee_url",
+                    "key": "sensitive_meta_to_remove",
                     "action": "remove"
                 }
             ]
@@ -70,35 +70,35 @@
         ],
         "meta_fields": [
             {
-                "key": "testing123",
+                "key": "sensitive_meta_to_remove",
                 "action": "remove"
             },
             {
-                "key": "foobar",
+                "key": "sensitive_meta_to_replace",
                 "action": "replace",
-                "value": "10"
+                "value": "some value"
             }
         ]
     },
     "options": [
         {
-            "name": "wpseo_flush_rewrite",
+            "name": "sensitive_option_to_remove",
             "action": "remove"
         },
         {
-            "name": "wpseo_social",
+            "name": "sensitive_option_to_replace",
             "action": "replace",
-            "value": ""
+            "value": "some value"
         },
         {
-            "name": "wpseo_test",
+            "name": "sensitive_option_to_fake",
             "action": "faker",
             "faker_type": "sentence"
         }
     ],
-    "_custom_tables": [
+    "custom_tables": [
         {
-            "name": "wp_yoast_seo_links",
+            "name": "custom_table_name",
             "primary_key": "id",
             "columns": [
                 {
