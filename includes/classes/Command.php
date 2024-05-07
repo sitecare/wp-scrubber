@@ -150,8 +150,8 @@ class Command extends WP_CLI_Command {
 	 *
 	 * ## OPTIONS
 	 *
-	 * [--ignore-size-limit]
-	 * : Ignore the database size limit.
+	 * [--ignore-errors]
+	 * : Ignore scrubbing errors during runtime.
 	 *
 	 * @param array $args       Positional arguments passed to the command.
 	 * @param array $assoc_args Associative arguments passed to the command.
@@ -163,9 +163,9 @@ class Command extends WP_CLI_Command {
 		global $wpdb;
 
 		// TODO: Allow path override in args
-		// TODO: handle size limit arg
 
 		$config_path = trailingslashit( WP_CONTENT_DIR ) . 'wp-scrubber.json';
+		$show_errors = empty( $assoc_args['ignore-errors'] );
 
 		if ( ! file_exists( $config_path ) ) {
 			WP_CLI::error( 'Unable to locate wp-scrubber.json in the wp-content/ directory.' );
@@ -187,7 +187,7 @@ class Command extends WP_CLI_Command {
 			foreach ( $user_ids as $user_id ) {
 				$scrub = Helpers\scrub_object_by_type( $user_id, $config->user_data, 'user' );
 
-				if ( false === $scrub || is_wp_error( $scrub ) ) {
+				if ( $show_errors && ( false === $scrub || is_wp_error( $scrub ) ) ) {
 					WP_CLI::error( "Unable to scrub user ID: {$user_id}" );
 				}
 
@@ -205,7 +205,7 @@ class Command extends WP_CLI_Command {
 				foreach ( $post_ids as $post_id ) {
 					$scrub = Helpers\scrub_object_by_type( $post_id, $post_type, 'post' );
 
-					if ( false === $scrub || is_wp_error( $scrub ) ) {
+					if ( $show_errors && ( false === $scrub || is_wp_error( $scrub ) ) ) {
 						WP_CLI::error( "Unable to scrub post ID: {$post_id}" );
 					}
 
@@ -220,7 +220,7 @@ class Command extends WP_CLI_Command {
 				foreach ( $revision_ids as $revision_id ) {
 					$scrub = Helpers\scrub_object_by_type( $revision_id, $post_type, 'revision' );
 
-					if ( false === $scrub || is_wp_error( $scrub ) ) {
+					if ( $show_errors && ( false === $scrub || is_wp_error( $scrub ) ) ) {
 						WP_CLI::error( "Unable to scrub revision ID: {$revision_id}" );
 					}
 
@@ -239,7 +239,7 @@ class Command extends WP_CLI_Command {
 				foreach ( $term_ids as $term_id ) {
 					$scrub = Helpers\scrub_object_by_type( $term_id, $taxonomy, 'term' );
 
-					if ( false === $scrub || is_wp_error( $scrub ) ) {
+					if ( $show_errors && ( false === $scrub || is_wp_error( $scrub ) ) ) {
 						WP_CLI::error( "Unable to scrub term ID: {$term_id}" );
 					}
 
