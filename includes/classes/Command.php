@@ -180,6 +180,9 @@ class Command extends WP_CLI_Command {
 
 		// TODO: Validate config before continuing
 
+		/**
+		 * Scrub user data.
+		 */
 		if ( ! empty( $config->user_data ) ) {
 			$user_ids = Helpers\get_all_user_ids();
 			$progress = \WP_CLI\Utils\make_progress_bar( 'Scrubbing user data', count( $user_ids ) );
@@ -197,6 +200,9 @@ class Command extends WP_CLI_Command {
 			$progress->finish();
 		}
 
+		/**
+		 * Scrub post data.
+		 */
 		if ( ! empty( $config->post_types ) ) {
 			foreach ( $config->post_types as $post_type ) {
 				$post_ids = Helpers\get_all_post_ids_of_post_type( $post_type->name );
@@ -231,6 +237,9 @@ class Command extends WP_CLI_Command {
 			}
 		}
 
+		/**
+		 * Scrub term data.
+		 */
 		if ( ! empty( $config->taxonomies ) ) {
 			foreach ( $config->taxonomies as $taxonomy ) {
 				$term_ids = Helpers\get_all_term_ids_of_taxonomy( $taxonomy->name );
@@ -250,6 +259,9 @@ class Command extends WP_CLI_Command {
 			}
 		}
 
+		/**
+		 * Truncate tables.
+		 */
 		if ( ! empty( $config->truncate_tables ) ) {
 			$progress = \WP_CLI\Utils\make_progress_bar( 'Truncating tables', count( $config->truncate_tables ) );
 
@@ -261,6 +273,9 @@ class Command extends WP_CLI_Command {
 			$progress->finish();
 		}
 
+		/**
+		 * Scrub options.
+		 */
 		if ( ! empty( $config->options ) ) {
 			$progress = \WP_CLI\Utils\make_progress_bar( 'Scrubbing options', count( $config->options ) );
 
@@ -283,6 +298,9 @@ class Command extends WP_CLI_Command {
 			$progress->finish();
 		}
 
+		/**
+		 * Scrub custom tables.
+		 */
 		if ( ! empty( $config->custom_tables ) ) {
 
 			foreach ( $config->custom_tables as $table ) {
