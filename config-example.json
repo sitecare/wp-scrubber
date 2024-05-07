@@ -1,0 +1,116 @@
+{
+    "post_types": [
+        {
+            "name": "post",
+            "fields": [
+                {
+                    "name": "post_title",
+                    "action": "faker",
+                    "faker_type": "sentence"
+                }
+            ],
+            "meta_fields": [
+                {
+                    "key": "_edit_lock",
+                    "action": "remove"
+                },
+                {
+                    "key": "_edit_last",
+                    "action": "replace",
+                    "value": "1"
+                },
+                {
+                    "key": "_yoast_wpseo_content_score",
+                    "action": "faker",
+                    "faker_type": "randomDigit"
+                }
+            ]
+        }
+    ],
+    "taxonomies": [
+        {
+            "name": "committee",
+            "fields": [
+                {
+                    "name": "name",
+                    "action": "faker",
+                    "faker_type": "word"
+                },
+                {
+                    "name": "description",
+                    "action": "faker",
+                    "faker_type": "sentence"
+                }
+            ],
+            "meta_fields": [
+                {
+                    "key": "committee_url",
+                    "action": "remove"
+                }
+            ]
+        }
+    ],
+    "user_data": {
+        "fields": [
+            {
+                "name": "display_name",
+                "action": "faker",
+                "faker_type": "name"
+            },
+            {
+                "name": "user_email",
+                "action": "faker",
+                "faker_type": "email"
+            },
+            {
+                "name": "user_url",
+                "action": "replace",
+                "value": "https://10up.com"
+            }
+        ],
+        "meta_fields": [
+            {
+                "key": "testing123",
+                "action": "remove"
+            },
+            {
+                "key": "foobar",
+                "action": "replace",
+                "value": "10"
+            }
+        ]
+    },
+    "options": [
+        {
+            "name": "wpseo_flush_rewrite",
+            "action": "remove"
+        },
+        {
+            "name": "wpseo_social",
+            "action": "replace",
+            "value": ""
+        },
+        {
+            "name": "wpseo_test",
+            "action": "faker",
+            "faker_type": "sentence"
+        }
+    ],
+    "_custom_tables": [
+        {
+            "name": "wp_yoast_seo_links",
+            "primary_key": "id",
+            "columns": [
+                {
+                    "name": "url",
+                    "action": "faker",
+                    "faker_type": "url"
+                }
+            ]
+        }
+    ],
+    "truncate_tables": [
+        "wp_yoast_indexable",
+        "wp_yoast_indexable_hierarchy"
+    ]
+}
