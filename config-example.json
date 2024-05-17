@@ -110,7 +110,7 @@
         }
     ],
     "truncate_tables": [
-        "wp_yoast_indexable",
-        "wp_yoast_indexable_hierarchy"
+        "wp_custom_table_name",
+        "wp_custom_table_name_two"
     ]
 }
