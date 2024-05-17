@@ -592,11 +592,18 @@ function validate_scrubber_config( string $config ): mixed {
 	$valid_actions   = [ 'remove', 'replace', 'faker' ];
 
 	if ( ! is_array( $config_arr ) ) {
-		$errors[] =  new \WP_Error( 'invalid_config', 'Invalid json object.' );
+		$errors[] = 'Invalid JSON configuration.';
 		return ['errors' => $errors, 'warnings' => $warnings];
 	}
 
 	$config_keys   = array_keys( $config_arr );
 	$scrubber_diff = array_diff( $config_keys, $valid_scrubbers );
 
+	if ( ! empty( $scrubber_diff ) ) {
+		foreach ( $scrubber_diff as $diff ) {
+			$warnings[] = 'Unknown configuration key: ' . $diff;
+		}
+	}
+
+	return ['errors' => $errors, 'warnings' => $warnings];
 }
