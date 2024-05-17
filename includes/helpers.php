@@ -576,3 +576,27 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
 
 	return true;
 }
+
+/**
+ * Validate the scrubber configuration.
+ *
+ * @param array $config The scrubber configuration object.
+ *
+ * @return mixed
+ */
+function validate_scrubber_config( string $config ): mixed {
+	$config_arr      = json_decode( $config, true );
+	$warnings        = [];
+	$errors          = [];
+	$valid_scrubbers = [ 'post_types', 'taxonomies', 'user_data', 'options', 'custom_tables', 'truncate_tables' ];
+	$valid_actions   = [ 'remove', 'replace', 'faker' ];
+
+	if ( ! is_array( $config_arr ) ) {
+		$errors[] =  new \WP_Error( 'invalid_config', 'Invalid json object.' );
+		return ['errors' => $errors, 'warnings' => $warnings];
+	}
+
+	$config_keys   = array_keys( $config_arr );
+	$scrubber_diff = array_diff( $config_keys, $valid_scrubbers );
+
+}
