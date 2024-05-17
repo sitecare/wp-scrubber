@@ -585,23 +585,37 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
  * @return mixed
  */
 function validate_scrubber_config( string $config ): mixed {
-	$config_arr      = json_decode( $config, true );
-	$warnings        = [];
-	$errors          = [];
-	$valid_scrubbers = [ 'post_types', 'taxonomies', 'user_data', 'options', 'custom_tables', 'truncate_tables' ];
-	$valid_actions   = [ 'remove', 'replace', 'faker' ];
+	$config_arr    = json_decode( $config, true );
+	$warnings      = [];
+	$errors        = [];
+	$valid_actions = [ 'remove', 'replace', 'faker' ];
 
 	if ( ! is_array( $config_arr ) ) {
 		$errors[] = 'Invalid JSON configuration.';
 		return ['errors' => $errors, 'warnings' => $warnings];
 	}
 
-	$config_keys   = array_keys( $config_arr );
-	$scrubber_diff = array_diff( $config_keys, $valid_scrubbers );
+	$config_options = array_keys( $config_arr );
+	$valid_options  = [ 'post_types', 'taxonomies', 'user_data', 'options', 'custom_tables', 'truncate_tables' ];
+	$scrubber_diff  = array_diff( $config_options, $valid_options );
 
 	if ( ! empty( $scrubber_diff ) ) {
 		foreach ( $scrubber_diff as $diff ) {
-			$warnings[] = 'Unknown configuration key: ' . $diff;
+			$warnings[] = 'Unknown scrubber config option: ' . $diff;
+		}
+	}
+
+	$valid_pt_options = [ 'name', 'fields', 'meta_fields' ];
+
+	if ( ! empty( $config_arr['post_types'] ) ) {
+		if ( ! is_array( $config_arr['post_types'] ) ) {
+			$errors[] = 'Invalid post_types configuration. - Must be an array.';
+		}
+
+		foreach ( $config_arr['post_types'] as $post_type ) {
+			if ( empty( $post_type['name'] ) ) {
+				$errors[] = 'Invalid post_types configuration. - Missing post type name.';
+			}
 		}
 	}
 
