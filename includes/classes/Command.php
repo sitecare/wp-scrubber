@@ -150,6 +150,9 @@ class Command extends WP_CLI_Command {
 	 *
 	 * ## OPTIONS
 	 *
+	 * [<path>]
+	 * : Path to the JSON config file relative to wp-content/ - Defaults to wp-scrubber.json
+	 *
 	 * [--ignore-errors]
 	 * : Ignore scrubbing errors during runtime.
 	 *
@@ -162,17 +165,25 @@ class Command extends WP_CLI_Command {
 	public function from_config( $args, $assoc_args ) {
 		global $wpdb;
 
-		// TODO: Allow path override in args
+		$config_file = 'wp-scrubber.json';
 
-		$config_path = trailingslashit( WP_CONTENT_DIR ) . 'wp-scrubber.json';
+		if ( ! empty( $args[0] ) ) {
+			$config_file = sanitize_text_field( $args[0] );
+
+			if ( '/' === substr( $config_file, 0, 1 ) ) {
+				$config_file = substr( $config_file, 1 );
+			}
+		}
+
+		$config_path = trailingslashit( WP_CONTENT_DIR ) . $config_file;
 		$show_errors = empty( $assoc_args['ignore-errors'] );
 
 		if ( ! file_exists( $config_path ) ) {
-			WP_CLI::error( 'Unable to locate wp-scrubber.json in the wp-content/ directory.' );
+			WP_CLI::error( 'File does not exist: ' . $config_path );
 		}
 
 		if ( ! is_readable( $config_path ) ) {
-			WP_CLI::error( 'The wp-scrubber.json file is not readable, please check/update the file permissions.' );
+			WP_CLI::error( 'File is not readable: ' . $config_path );
 		}
 
 		$config_json = file_get_contents( $config_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
