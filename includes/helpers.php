@@ -624,7 +624,31 @@ function validate_scrubber_config( string $config ): mixed {
 			}
 
 			if ( ! empty( $post_type['fields'] ) ) {
-				$errors[] = 'Invalid post_types configuration. - fields must be an array.';
+				if ( ! is_array( $post_type['fields'] ) ) {
+					$errors[] = 'Invalid post_types fields configuration - Must be an array.';
+				}
+
+				foreach ( $post_type['fields'] as $field ) {
+					if ( empty( $field['name'] ) ) {
+						$errors[] = 'Invalid post_types fields configuration - Missing field name.';
+					}
+
+					if ( empty( $field['action'] ) ) {
+						$errors[] = 'Invalid post_types fields configuration - Missing field action.';
+					}
+
+					if ( ! in_array( $field['action'], $valid_actions, true ) ) {
+						$errors[] = 'Invalid post_types fields configuration - Invalid field action.';
+					}
+
+					if ( 'replace' === $field['action'] && empty( $field['value'] ) ) {
+						$errors[] = 'Invalid post_types fields configuration - Missing field value.';
+					}
+
+					if ( 'faker' === $field['action'] && empty( $field['faker_type'] ) ) {
+						$errors[] = 'Invalid post_types fields configuration - Missing faker type.';
+					}
+				}
 			}
 		}
 	}
