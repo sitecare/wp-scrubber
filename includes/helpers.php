@@ -595,16 +595,6 @@ function validate_scrubber_config( string $config ): mixed {
 		return ['errors' => $errors, 'warnings' => $warnings];
 	}
 
-	$config_options = array_keys( $config_arr );
-	$valid_options  = [ 'post_types', 'taxonomies', 'user_data', 'options', 'custom_tables', 'truncate_tables' ];
-	$scrubber_diff  = array_diff( $config_options, $valid_options );
-
-	if ( ! empty( $scrubber_diff ) ) {
-		foreach ( $scrubber_diff as $diff ) {
-			$warnings[] = 'Unknown scrubber config option: ' . $diff;
-		}
-	}
-
 	if ( ! empty( $config_arr['post_types'] ) ) {
 		if ( ! is_array( $config_arr['post_types'] ) ) {
 			$errors[] = 'Invalid post_types configuration. - Must be an array.';
@@ -613,14 +603,6 @@ function validate_scrubber_config( string $config ): mixed {
 		foreach ( $config_arr['post_types'] as $post_type ) {
 			if ( empty( $post_type['name'] ) ) {
 				$errors[] = 'Invalid post_types configuration. - Missing post type name.';
-			}
-
-			$pt_options       = array_keys( $post_type );
-			$valid_pt_options = [ 'name', 'fields', 'meta_fields' ];
-			$pt_diff          = array_diff( $pt_options, $valid_pt_options );
-
-			foreach ( $pt_diff as $diff ) {
-				$warnings[] = 'Unknown post type config option: ' . $diff;
 			}
 
 			if ( ! empty( $post_type['fields'] ) ) {
