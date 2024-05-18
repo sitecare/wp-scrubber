@@ -632,6 +632,34 @@ function validate_scrubber_config( string $config ): mixed {
 					}
 				}
 			}
+
+			if ( ! empty( $post_type['meta_fields'] ) ) {
+				if ( ! is_array( $post_type['meta_fields'] ) ) {
+					$errors[] = 'Invalid post_types meta_fields configuration - Must be an array.';
+				}
+
+				foreach ( $post_type['meta_fields'] as $meta_field ) {
+					if ( empty( $meta_field['key'] ) ) {
+						$errors[] = 'Invalid post_types meta_fields configuration - Missing meta field key.';
+					}
+
+					if ( empty( $meta_field['action'] ) ) {
+						$errors[] = 'Invalid post_types meta_fields configuration - Missing meta field action.';
+					}
+
+					if ( ! in_array( $meta_field['action'], $valid_actions, true ) ) {
+						$errors[] = 'Invalid post_types meta_fields configuration - Invalid meta field action.';
+					}
+
+					if ( 'replace' === $meta_field['action'] && empty( $meta_field['value'] ) ) {
+						$errors[] = 'Invalid post_types meta_fields configuration - Missing meta field value.';
+					}
+
+					if ( 'faker' === $meta_field['action'] && empty( $meta_field['faker_type'] ) ) {
+						$errors[] = 'Invalid post_types meta_fields configuration - Missing meta field faker type.';
+					}
+				}
+			}
 		}
 	}
 
