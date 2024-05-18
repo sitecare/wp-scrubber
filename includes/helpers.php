@@ -605,8 +605,6 @@ function validate_scrubber_config( string $config ): mixed {
 		}
 	}
 
-	$valid_pt_options = [ 'name', 'fields', 'meta_fields' ];
-
 	if ( ! empty( $config_arr['post_types'] ) ) {
 		if ( ! is_array( $config_arr['post_types'] ) ) {
 			$errors[] = 'Invalid post_types configuration. - Must be an array.';
@@ -615,6 +613,18 @@ function validate_scrubber_config( string $config ): mixed {
 		foreach ( $config_arr['post_types'] as $post_type ) {
 			if ( empty( $post_type['name'] ) ) {
 				$errors[] = 'Invalid post_types configuration. - Missing post type name.';
+			}
+
+			$pt_options       = array_keys( $post_type );
+			$valid_pt_options = [ 'name', 'fields', 'meta_fields' ];
+			$pt_diff          = array_diff( $pt_options, $valid_pt_options );
+
+			foreach ( $pt_diff as $diff ) {
+				$warnings[] = 'Unknown post type config option: ' . $diff;
+			}
+
+			if ( ! empty( $post_type['fields'] ) ) {
+				$errors[] = 'Invalid post_types configuration. - fields must be an array.';
 			}
 		}
 	}
