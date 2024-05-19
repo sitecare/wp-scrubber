@@ -663,12 +663,12 @@ function validate_scrubber_config( object $config ): mixed {
 
 	if ( ! empty( $config->post_types ) ) {
 		if ( ! is_array( $config->post_types ) ) {
-			$errors[] = 'Invalid post_types configuration. - Must be an array.';
+			$errors[] = 'Invalid post_types configuration - Must be an array.';
 		}
 
 		foreach ( $config->post_types as $post_type ) {
 			if ( ! is_object( $post_type ) ) {
-				$errors[] = 'Invalid post_type configuration. - Must be an object.';
+				$errors[] = 'Invalid post_type configuration - Must be an object.';
 
 			} else {
 				$errors = array_merge( $errors, validate_object_config( $post_type, 'post_type' ) );
@@ -678,12 +678,12 @@ function validate_scrubber_config( object $config ): mixed {
 
 	if ( ! empty( $config->taxonomies ) ) {
 		if ( ! is_array( $config->taxonomies ) ) {
-			$errors[] = 'Invalid taxonomies configuration. - Must be an array.';
+			$errors[] = 'Invalid taxonomies configuration - Must be an array.';
 		}
 
 		foreach ( $config->taxonomies as $taxonomy ) {
 			if ( ! is_object( $taxonomy ) ) {
-				$errors[] = 'Invalid taxonomy configuration. - Must be an object.';
+				$errors[] = 'Invalid taxonomy configuration - Must be an object.';
 
 			} else {
 				$errors = array_merge( $errors, validate_object_config( $taxonomy, 'taxonomy' ) );
@@ -694,7 +694,7 @@ function validate_scrubber_config( object $config ): mixed {
 
 	if ( ! empty( $config->user_data ) ) {
 		if ( ! is_object( $config->user_data ) ) {
-			$errors[] = 'Invalid user_data configuration. - Must be an object.';
+			$errors[] = 'Invalid user_data configuration - Must be an object.';
 
 		} else {
 			$errors = array_merge( $errors, validate_object_config( $config->user_data, 'user_data' ) );
@@ -704,15 +704,27 @@ function validate_scrubber_config( object $config ): mixed {
 
 	if ( ! empty( $config->options ) ) {
 		if ( ! is_array( $config->options ) ) {
-			$errors[] = 'Invalid options configuration. - Must be an array.';
+			$errors[] = 'Invalid options configuration - Must be an array.';
 		}
 
 		foreach ( $config->options as $option ) {
 			if ( ! is_object( $option ) ) {
-				$errors[] = 'Invalid option configuration. - Must be an object.';
+				$errors[] = 'Invalid option configuration - Must be an object.';
 
 			} else {
 				$errors = array_merge( $errors, validate_field_config( $option, 'option' ) );
+			}
+		}
+	}
+
+	if ( ! empty( $config->truncate_tables ) ) {
+		if ( ! is_array( $config->truncate_tables ) ) {
+			$errors[] = 'Invalid truncate_tables configuration - Must be an array.';
+		}
+
+		foreach ( $config->truncate_tables as $truncate_table ) {
+			if ( ! is_string( $truncate_table ) ) {
+				$errors[] = 'Invalid table in truncate_tables - Must be a string.';
 			}
 		}
 	}
