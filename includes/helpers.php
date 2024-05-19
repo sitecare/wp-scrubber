@@ -577,6 +577,13 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
 	return true;
 }
 
+/**
+ * Validate the object configuration.
+ *
+ * @param object $obj_config The object configuration object.
+ *
+ * @return mixed
+ */
 function validate_object_config( object $obj_config ): mixed {
 	$errors = [];
 
@@ -685,6 +692,21 @@ function validate_scrubber_config( object $config ): mixed {
 			$errors = array_merge( $errors, validate_object_config( $config->user_data ) );
 		}
 
+	}
+
+	if ( ! empty( $config->options ) ) {
+		if ( ! is_array( $config->options ) ) {
+			$errors[] = 'Invalid options configuration. - Must be an array.';
+		}
+
+		foreach ( $config->options as $option ) {
+			if ( ! is_object( $option ) ) {
+				$errors[] = 'Invalid option configuration. - Must be an object.';
+
+			} else {
+				// $errors = array_merge( $errors, validate_object_config( $option ) );
+			}
+		}
 	}
 
 	return $errors;
