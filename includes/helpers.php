@@ -578,6 +578,42 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
 }
 
 /**
+ * Validate the field configuration.
+ *
+ * @param object $field   The field configuration object.
+ * @param bool   $is_meta Whether the field is a meta field or not.
+ *
+ * @return mixed
+ */
+function validate_field_config( object $field, bool $is_meta = false ): mixed {
+	$errors = [];
+
+	if ( $is_meta ) {
+		if ( empty( $field->key ) ) {
+			$errors[] = 'Invalid fields configuration - Missing meta field key.';
+		}
+	} else {
+		if ( empty( $field->name ) ) {
+			$errors[] = 'Invalid fields configuration - Missing field name.';
+		}
+	}
+
+	if ( empty( $field->action ) ) {
+		$errors[] = 'Invalid fields configuration - Missing field action.';
+	}
+
+	if ( 'replace' === $field->action && empty( $field->value ) ) {
+		$errors[] = 'Invalid fields configuration - Missing replace value.';
+	}
+
+	if ( 'faker' === $field->action && empty( $field->faker_type ) ) {
+		$errors[] = 'Invalid fields configuration - Missing faker type.';
+	}
+
+	return $errors;
+}
+
+/**
  * Validate the object configuration.
  *
  * @param object $obj_config The object configuration object.
@@ -593,21 +629,7 @@ function validate_object_config( object $obj_config ): mixed {
 
 		} else {
 			foreach ( $obj_config->fields as $field ) {
-				if ( empty( $field->name ) ) {
-					$errors[] = 'Invalid fields configuration - Missing field name.';
-				}
-
-				if ( empty( $field->action ) ) {
-					$errors[] = 'Invalid fields configuration - Missing field action.';
-				}
-
-				if ( 'replace' === $field->action && empty( $field->value ) ) {
-					$errors[] = 'Invalid fields configuration - Missing replace value.';
-				}
-
-				if ( 'faker' === $field->action && empty( $field->faker_type ) ) {
-					$errors[] = 'Invalid fields configuration - Missing faker type.';
-				}
+				$errors = array_merga( $errors, validate_field_config( $field ) );
 			}
 		}
 
@@ -619,21 +641,7 @@ function validate_object_config( object $obj_config ): mixed {
 
 		} else {
 			foreach ( $obj_config->meta_fields as $meta_field ) {
-				if ( empty( $meta_field->key ) ) {
-					$errors[] = 'Invalid meta_fields configuration - Missing meta field key.';
-				}
-
-				if ( empty( $meta_field->action ) ) {
-					$errors[] = 'Invalid meta_fields configuration - Missing meta field action.';
-				}
-
-				if ( 'replace' === $meta_field->action && empty( $meta_field->value ) ) {
-					$errors[] = 'Invalid meta_fields configuration - Missing replace value.';
-				}
-
-				if ( 'faker' === $meta_field->action && empty( $meta_field->faker_type ) ) {
-					$errors[] = 'Invalid meta_fields configuration - Missing faker type.';
-				}
+				$errors = array_merga( $errors, validate_field_config( $meta_field, true ) );
 			}
 		}
 
@@ -704,7 +712,7 @@ function validate_scrubber_config( object $config ): mixed {
 				$errors[] = 'Invalid option configuration. - Must be an object.';
 
 			} else {
-				// $errors = array_merge( $errors, validate_object_config( $option ) );
+				$errors = array_merge( $errors, validate_field_config( $option ) );
 			}
 		}
 	}
