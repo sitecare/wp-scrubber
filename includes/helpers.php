@@ -577,6 +577,64 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
 	return true;
 }
 
+function validate_object_config( object $obj_config ): mixed {
+	$errors = [];
+
+	if ( ! empty( $obj_config->fields ) ) {
+		if ( ! is_array( $obj_config->fields ) ) {
+			$errors[] = 'Invalid fields configuration - Must be an array.';
+
+		} else {
+			foreach ( $obj_config->fields as $field ) {
+				if ( empty( $field->name ) ) {
+					$errors[] = 'Invalid fields configuration - Missing field name.';
+				}
+
+				if ( empty( $field->action ) ) {
+					$errors[] = 'Invalid fields configuration - Missing field action.';
+				}
+
+				if ( 'replace' === $field->action && empty( $field->value ) ) {
+					$errors[] = 'Invalid fields configuration - Missing replace value.';
+				}
+
+				if ( 'faker' === $field->action && empty( $field->faker_type ) ) {
+					$errors[] = 'Invalid fields configuration - Missing faker type.';
+				}
+			}
+		}
+
+	}
+
+	if ( ! empty( $obj_config->meta_fields ) ) {
+		if ( ! is_array( $obj_config->meta_fields ) ) {
+			$errors[] = 'Invalid meta_fields configuration - Must be an array.';
+
+		} else {
+			foreach ( $obj_config->meta_fields as $meta_field ) {
+				if ( empty( $meta_field->key ) ) {
+					$errors[] = 'Invalid meta_fields configuration - Missing meta field key.';
+				}
+
+				if ( empty( $meta_field->action ) ) {
+					$errors[] = 'Invalid meta_fields configuration - Missing meta field action.';
+				}
+
+				if ( 'replace' === $meta_field->action && empty( $meta_field->value ) ) {
+					$errors[] = 'Invalid meta_fields configuration - Missing replace value.';
+				}
+
+				if ( 'faker' === $meta_field->action && empty( $meta_field->faker_type ) ) {
+					$errors[] = 'Invalid meta_fields configuration - Missing faker type.';
+				}
+			}
+		}
+
+	}
+
+	return $errors;
+}
+
 /**
  * Validate the scrubber configuration.
  *
@@ -594,66 +652,7 @@ function validate_scrubber_config( object $config ): mixed {
 		}
 
 		foreach ( $config->post_types as $post_type ) {
-			if ( empty( $post_type->name ) ) {
-				$errors[] = 'Invalid post_types configuration. - Missing post type name.';
-			}
-
-			if ( ! empty( $post_type->fields ) ) {
-				if ( ! is_array( $post_type->fields ) ) {
-					$errors[] = 'Invalid post_types fields configuration - Must be an array.';
-					continue;
-				}
-
-				foreach ( $post_type->fields as $field ) {
-					if ( empty( $field->name ) ) {
-						$errors[] = 'Invalid post_types fields configuration - Missing field name.';
-					}
-
-					if ( empty( $field->action ) ) {
-						$errors[] = 'Invalid post_types fields configuration - Missing field action.';
-					}
-
-					if ( ! in_array( $field->action, $valid_actions, true ) ) {
-						$errors[] = 'Invalid post_types fields configuration - Invalid field action.';
-					}
-
-					if ( 'replace' === $field->action && empty( $field->value ) ) {
-						$errors[] = 'Invalid post_types fields configuration - Missing replace value.';
-					}
-
-					if ( 'faker' === $field->action && empty( $field->faker_type ) ) {
-						$errors[] = 'Invalid post_types fields configuration - Missing faker type.';
-					}
-				}
-			}
-
-			if ( ! empty( $post_type->meta_fields ) ) {
-				if ( ! is_array( $post_type->meta_fields ) ) {
-					$errors[] = 'Invalid post_types meta_fields configuration - Must be an array.';
-				}
-
-				foreach ( $post_type->meta_fields as $meta_field ) {
-					if ( empty( $meta_field->key ) ) {
-						$errors[] = 'Invalid post_types meta_fields configuration - Missing meta field key.';
-					}
-
-					if ( empty( $meta_field->action ) ) {
-						$errors[] = 'Invalid post_types meta_fields configuration - Missing meta field action.';
-					}
-
-					if ( ! in_array( $meta_field->action, $valid_actions, true ) ) {
-						$errors[] = 'Invalid post_types meta_fields configuration - Invalid meta field action.';
-					}
-
-					if ( 'replace' === $meta_field->action && empty( $meta_field->value ) ) {
-						$errors[] = 'Invalid post_types meta_fields configuration - Missing replace value.';
-					}
-
-					if ( 'faker' === $meta_field->action && empty( $meta_field->faker_type ) ) {
-						$errors[] = 'Invalid post_types meta_fields configuration - Missing faker type.';
-					}
-				}
-			}
+			$errors = array_merge( $errors, validate_object_config( $post_type ) );
 		}
 	}
 
