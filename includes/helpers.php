@@ -671,6 +671,10 @@ function validate_scrubber_config( object $config ): mixed {
 				$errors[] = 'Invalid post_type configuration - Must be an object.';
 
 			} else {
+				if ( empty( $post_type->name ) ) {
+					$errors[] = 'Invalid post_type configuration - Missing post type name.';
+				}
+
 				$errors = array_merge( $errors, validate_object_config( $post_type, 'post_type' ) );
 			}
 		}
@@ -686,6 +690,10 @@ function validate_scrubber_config( object $config ): mixed {
 				$errors[] = 'Invalid taxonomy configuration - Must be an object.';
 
 			} else {
+				if ( empty( $taxonomy->name ) ) {
+					$errors[] = 'Invalid taxonomy configuration - Missing taxonomy name.';
+				}
+
 				$errors = array_merge( $errors, validate_object_config( $taxonomy, 'taxonomy' ) );
 			}
 
