@@ -652,7 +652,12 @@ function validate_scrubber_config( object $config ): mixed {
 		}
 
 		foreach ( $config->post_types as $post_type ) {
-			$errors = array_merge( $errors, validate_object_config( $post_type ) );
+			if ( ! is_object( $post_type ) ) {
+				$errors[] = 'Invalid post_type configuration. - Must be an object.';
+
+			} else {
+				$errors = array_merge( $errors, validate_object_config( $post_type ) );
+			}
 		}
 	}
 
@@ -662,12 +667,24 @@ function validate_scrubber_config( object $config ): mixed {
 		}
 
 		foreach ( $config->taxonomies as $taxonomy ) {
-			$errors = array_merge( $errors, validate_object_config( $taxonomy ) );
+			if ( ! is_object( $taxonomy ) ) {
+				$errors[] = 'Invalid taxonomy configuration. - Must be an object.';
+
+			} else {
+				$errors = array_merge( $errors, validate_object_config( $taxonomy ) );
+			}
+
 		}
 	}
 
 	if ( ! empty( $config->user_data ) ) {
-		$errors = array_merge( $errors, validate_object_config( $config->user_data ) );
+		if ( ! is_object( $config->user_data ) ) {
+			$errors[] = 'Invalid user_data configuration. - Must be an object.';
+
+		} else {
+			$errors = array_merge( $errors, validate_object_config( $config->user_data ) );
+		}
+
 	}
 
 	return $errors;
