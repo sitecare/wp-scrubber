@@ -666,5 +666,9 @@ function validate_scrubber_config( object $config ): mixed {
 		}
 	}
 
+	if ( ! empty( $config->user_data ) ) {
+		$errors = array_merge( $errors, validate_object_config( $config->user_data ) );
+	}
+
 	return $errors;
 }
