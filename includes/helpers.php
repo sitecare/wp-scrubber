@@ -585,29 +585,29 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
  *
  * @return mixed
  */
-function validate_field_config( object $field, bool $is_meta = false ): mixed {
+function validate_field_config( object $field, string $parent, bool $is_meta = false ): mixed {
 	$errors = [];
 
 	if ( $is_meta ) {
 		if ( empty( $field->key ) ) {
-			$errors[] = 'Invalid fields configuration - Missing meta field key.';
+			$errors[] = sprintf( 'Invalid %s configuration - Missing meta field key.', $parent );
 		}
 	} else {
 		if ( empty( $field->name ) ) {
-			$errors[] = 'Invalid fields configuration - Missing field name.';
+			$errors[] = sprintf( 'Invalid %s configuration - Missing field name.', $parent );
 		}
 	}
 
 	if ( empty( $field->action ) ) {
-		$errors[] = 'Invalid fields configuration - Missing field action.';
+		$errors[] = sprintf( 'Invalid %s configuration - Missing field action.', $parent );
 	}
 
 	if ( 'replace' === $field->action && empty( $field->value ) ) {
-		$errors[] = 'Invalid fields configuration - Missing replace value.';
+		$errors[] = sprintf( 'Invalid %s configuration - Missing replace value.', $parent );
 	}
 
 	if ( 'faker' === $field->action && empty( $field->faker_type ) ) {
-		$errors[] = 'Invalid fields configuration - Missing faker type.';
+		$errors[] = sprintf( 'Invalid %s configuration - Missing faker type.', $parent );
 	}
 
 	return $errors;
@@ -620,16 +620,16 @@ function validate_field_config( object $field, bool $is_meta = false ): mixed {
  *
  * @return mixed
  */
-function validate_object_config( object $obj_config ): mixed {
+function validate_object_config( object $obj_config, string $parent ): mixed {
 	$errors = [];
 
 	if ( ! empty( $obj_config->fields ) ) {
 		if ( ! is_array( $obj_config->fields ) ) {
-			$errors[] = 'Invalid fields configuration - Must be an array.';
+			$errors[] = sprintf( 'Invalid %s fields configuration - Must be an array.', $parent );
 
 		} else {
 			foreach ( $obj_config->fields as $field ) {
-				$errors = array_merge( $errors, validate_field_config( $field ) );
+				$errors = array_merge( $errors, validate_field_config( $field, $parent . ' field' ) );
 			}
 		}
 
@@ -637,11 +637,11 @@ function validate_object_config( object $obj_config ): mixed {
 
 	if ( ! empty( $obj_config->meta_fields ) ) {
 		if ( ! is_array( $obj_config->meta_fields ) ) {
-			$errors[] = 'Invalid meta_fields configuration - Must be an array.';
+			$errors[] = sprintf( 'Invalid %s meta_fields configuration - Must be an array.', $parent );
 
 		} else {
 			foreach ( $obj_config->meta_fields as $meta_field ) {
-				$errors = array_merge( $errors, validate_field_config( $meta_field, true ) );
+				$errors = array_merge( $errors, validate_field_config( $meta_field, $parent . ' meta_field', true ) );
 			}
 		}
 
@@ -671,7 +671,7 @@ function validate_scrubber_config( object $config ): mixed {
 				$errors[] = 'Invalid post_type configuration. - Must be an object.';
 
 			} else {
-				$errors = array_merge( $errors, validate_object_config( $post_type ) );
+				$errors = array_merge( $errors, validate_object_config( $post_type, 'post_type' ) );
 			}
 		}
 	}
@@ -686,7 +686,7 @@ function validate_scrubber_config( object $config ): mixed {
 				$errors[] = 'Invalid taxonomy configuration. - Must be an object.';
 
 			} else {
-				$errors = array_merge( $errors, validate_object_config( $taxonomy ) );
+				$errors = array_merge( $errors, validate_object_config( $taxonomy, 'taxonomy' ) );
 			}
 
 		}
@@ -697,7 +697,7 @@ function validate_scrubber_config( object $config ): mixed {
 			$errors[] = 'Invalid user_data configuration. - Must be an object.';
 
 		} else {
-			$errors = array_merge( $errors, validate_object_config( $config->user_data ) );
+			$errors = array_merge( $errors, validate_object_config( $config->user_data, 'user_data' ) );
 		}
 
 	}
@@ -712,7 +712,7 @@ function validate_scrubber_config( object $config ): mixed {
 				$errors[] = 'Invalid option configuration. - Must be an object.';
 
 			} else {
-				$errors = array_merge( $errors, validate_field_config( $option ) );
+				$errors = array_merge( $errors, validate_field_config( $option, 'option' ) );
 			}
 		}
 	}
