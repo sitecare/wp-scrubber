@@ -629,7 +629,7 @@ function validate_object_config( object $obj_config ): mixed {
 
 		} else {
 			foreach ( $obj_config->fields as $field ) {
-				$errors = array_merga( $errors, validate_field_config( $field ) );
+				$errors = array_merge( $errors, validate_field_config( $field ) );
 			}
 		}
 
@@ -641,7 +641,7 @@ function validate_object_config( object $obj_config ): mixed {
 
 		} else {
 			foreach ( $obj_config->meta_fields as $meta_field ) {
-				$errors = array_merga( $errors, validate_field_config( $meta_field, true ) );
+				$errors = array_merge( $errors, validate_field_config( $meta_field, true ) );
 			}
 		}
 
