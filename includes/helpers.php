@@ -656,5 +656,15 @@ function validate_scrubber_config( object $config ): mixed {
 		}
 	}
 
+	if ( ! empty( $config->taxonomies ) ) {
+		if ( ! is_array( $config->taxonomies ) ) {
+			$errors[] = 'Invalid taxonomies configuration. - Must be an array.';
+		}
+
+		foreach ( $config->taxonomies as $taxonomy ) {
+			$errors = array_merge( $errors, validate_object_config( $taxonomy ) );
+		}
+	}
+
 	return $errors;
 }
