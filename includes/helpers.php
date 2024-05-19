@@ -618,7 +618,7 @@ function validate_scrubber_config( object $config ): mixed {
 					}
 
 					if ( 'replace' === $field->action && empty( $field->value ) ) {
-						$errors[] = 'Invalid post_types fields configuration - Missing field value.';
+						$errors[] = 'Invalid post_types fields configuration - Missing replace value.';
 					}
 
 					if ( 'faker' === $field->action && empty( $field->faker_type ) ) {
@@ -646,11 +646,11 @@ function validate_scrubber_config( object $config ): mixed {
 					}
 
 					if ( 'replace' === $meta_field->action && empty( $meta_field->value ) ) {
-						$errors[] = 'Invalid post_types meta_fields configuration - Missing meta field value.';
+						$errors[] = 'Invalid post_types meta_fields configuration - Missing replace value.';
 					}
 
 					if ( 'faker' === $meta_field->action && empty( $meta_field->faker_type ) ) {
-						$errors[] = 'Invalid post_types meta_fields configuration - Missing meta field faker type.';
+						$errors[] = 'Invalid post_types meta_fields configuration - Missing faker type.';
 					}
 				}
 			}
