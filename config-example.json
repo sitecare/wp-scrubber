@@ -11,16 +11,16 @@
             ],
             "meta_fields": [
                 {
-                    "key": "sensitive_meta_to_remove",
+                    "name": "sensitive_meta_to_remove",
                     "action": "remove"
                 },
                 {
-                    "key": "sensitive_meta_to_replace",
+                    "name": "sensitive_meta_to_replace",
                     "action": "replace",
                     "value": "1"
                 },
                 {
-                    "key": "sensitive_meta_to_fake",
+                    "name": "sensitive_meta_to_fake",
                     "action": "faker",
                     "faker_type": "randomDigit"
                 }
@@ -44,7 +44,7 @@
             ],
             "meta_fields": [
                 {
-                    "key": "sensitive_meta_to_remove",
+                    "name": "sensitive_meta_to_remove",
                     "action": "remove"
                 }
             ]
@@ -70,11 +70,11 @@
         ],
         "meta_fields": [
             {
-                "key": "sensitive_meta_to_remove",
+                "name": "sensitive_meta_to_remove",
                 "action": "remove"
             },
             {
-                "key": "sensitive_meta_to_replace",
+                "name": "sensitive_meta_to_replace",
                 "action": "replace",
                 "value": "some value"
             }

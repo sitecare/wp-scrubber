@@ -455,7 +455,7 @@ function get_field_data_by_action( object $field ): mixed {
 function scrub_meta_field( int $object_id, object $field_config, string $object_type ): bool|\WP_Error {
 	global $wpdb;
 
-	$meta_key = $field_config->key;
+	$meta_key = $field_config->name;
 
 	switch ( $object_type ) {
 		case 'user':
@@ -585,17 +585,11 @@ function scrub_object_by_type( int $object_id, object $object_config, string $ob
  *
  * @return mixed
  */
-function validate_field_config( object $field, string $parent, bool $is_meta = false ): mixed {
+function validate_field_config( object $field, string $parent ): mixed {
 	$errors = [];
 
-	if ( $is_meta ) {
-		if ( empty( $field->key ) ) {
-			$errors[] = sprintf( 'Invalid %s configuration - Missing meta field key.', $parent );
-		}
-	} else {
-		if ( empty( $field->name ) ) {
-			$errors[] = sprintf( 'Invalid %s configuration - Missing field name.', $parent );
-		}
+	if ( empty( $field->name ) ) {
+		$errors[] = sprintf( 'Invalid %s configuration - Missing field name.', $parent );
 	}
 
 	if ( empty( $field->action ) ) {
@@ -640,7 +634,7 @@ function validate_object_config( object $obj_config, string $parent ): mixed {
 
 		} else {
 			foreach ( $obj_config->meta_fields as $meta_field ) {
-				$errors = array_merge( $errors, validate_field_config( $meta_field, $parent . ' meta_field', true ) );
+				$errors = array_merge( $errors, validate_field_config( $meta_field, $parent . ' meta_field' ) );
 			}
 		}
 	}
