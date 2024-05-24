@@ -602,7 +602,7 @@ function validate_field_config( object $field, string $parent, bool $is_meta = f
 		$errors[] = sprintf( 'Invalid %s configuration - Missing field action.', $parent );
 	}
 
-	if ( 'replace' === $field->action && empty( $field->value ) ) {
+	if ( 'replace' === $field->action && ! isset( $field->value ) ) {
 		$errors[] = sprintf( 'Invalid %s configuration - Missing replace value.', $parent );
 	}
 
