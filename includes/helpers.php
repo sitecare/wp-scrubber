@@ -632,7 +632,6 @@ function validate_object_config( object $obj_config, string $parent ): mixed {
 				$errors = array_merge( $errors, validate_field_config( $field, $parent . ' field' ) );
 			}
 		}
-
 	}
 
 	if ( ! empty( $obj_config->meta_fields ) ) {
@@ -644,7 +643,17 @@ function validate_object_config( object $obj_config, string $parent ): mixed {
 				$errors = array_merge( $errors, validate_field_config( $meta_field, $parent . ' meta_field', true ) );
 			}
 		}
+	}
 
+	if ( ! empty( $obj_config->columns ) ) {
+		if ( ! is_array( $obj_config->columns ) ) {
+			$errors[] = sprintf( 'Invalid %s columns configuration - Must be an array.', $parent );
+
+		} else {
+			foreach ( $obj_config->columns as $column ) {
+				$errors = array_merge( $errors, validate_field_config( $column, $parent . ' column' ) );
+			}
+		}
 	}
 
 	return $errors;
@@ -721,6 +730,29 @@ function validate_scrubber_config( object $config ): mixed {
 
 			} else {
 				$errors = array_merge( $errors, validate_field_config( $option, 'option' ) );
+			}
+		}
+	}
+
+	if ( ! empty( $config->custom_tables ) ) {
+		if ( ! is_array( $config->custom_tables ) ) {
+			$errors[] = 'Invalid custom_tables configuration - Must be an array.';
+		}
+
+		foreach ( $config->custom_tables as $custom_table ) {
+			if ( ! is_object( $custom_table ) ) {
+				$errors[] = 'Invalid custom_table configuration - Must be an object.';
+
+			} else {
+				if ( empty( $custom_table->name ) ) {
+					$errors[] = 'Invalid custom_table configuration - Missing table name.';
+				}
+
+				if ( empty( $custom_table->primary_key ) ) {
+					$errors[] = 'Invalid custom_table configuration - Missing primary key.';
+				}
+
+
 			}
 		}
 	}
