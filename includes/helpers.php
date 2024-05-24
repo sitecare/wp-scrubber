@@ -752,7 +752,7 @@ function validate_scrubber_config( object $config ): mixed {
 					$errors[] = 'Invalid custom_table configuration - Missing primary key.';
 				}
 
-
+				$errors = array_merge( $errors, validate_object_config( $custom_table, 'custom_table' ) );
 			}
 		}
 	}
