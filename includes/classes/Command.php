@@ -153,7 +153,7 @@ class Command extends WP_CLI_Command {
 	 * [<path>]
 	 * : Path to the JSON config file relative to wp-content/ - Defaults to wp-scrubber.json
 	 *
-	 * [--ignore-errors]
+	 * [--ignore-db-errors]
 	 * : Ignore scrubbing errors during runtime.
 	 *
 	 * @param array $args       Positional arguments passed to the command.
@@ -176,7 +176,7 @@ class Command extends WP_CLI_Command {
 		}
 
 		$config_path = trailingslashit( WP_CONTENT_DIR ) . $config_file;
-		$show_errors = empty( $assoc_args['ignore-errors'] );
+		$show_errors = empty( $assoc_args['ignore-db-errors'] );
 
 		if ( ! file_exists( $config_path ) ) {
 			WP_CLI::error( 'File does not exist: ' . $config_path );
