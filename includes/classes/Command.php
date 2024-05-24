@@ -186,12 +186,16 @@ class Command extends WP_CLI_Command {
 			WP_CLI::error( 'File is not readable: ' . $config_path );
 		}
 
-		$config_json = file_get_contents( $config_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
-		$config      = json_decode( $config_json );
-		$validation  = Helpers\validate_scrubber_config( $config );
+		$config_json   = file_get_contents( $config_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		$config        = json_decode( $config_json );
+		$config_errors = Helpers\validate_scrubber_config( $config );
 
-		var_dump( $validation );
-		die;
+		if ( ! empty( $config_errors ) ) {
+			foreach ( $config_errors as $error ) {
+				WP_CLI::log( WP_CLI::colorize( '%yConfig Error:%n ' ) . $error );
+			}
+			WP_CLI::error( 'Errors found in config file. Please correct them and try again.' );
+		}
 
 		/**
 		 * Scrub user data.
