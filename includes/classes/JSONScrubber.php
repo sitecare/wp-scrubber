@@ -23,12 +23,20 @@ class JSONScrubber {
 	protected $config;
 
 	/**
+	 * Show errors.
+	 *
+	 * @var bool
+	 */
+	protected $show_errors;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param object $config JSON config.
 	 */
-	public function __construct( $config ) {
+	public function __construct( $config, $show_errors = true ) {
 		$this->config = $config;
+		$this->show_errors = $show_errors;
 	}
 
 	/**
@@ -45,7 +53,7 @@ class JSONScrubber {
 		foreach ( $user_ids as $user_id ) {
 			$scrub = Helpers\scrub_object_by_type( $user_id, $this->config->user_data, 'user' );
 
-			if ( $show_errors && ( false === $scrub || is_wp_error( $scrub ) ) ) {
+			if ( $this->show_errors && ( false === $scrub || is_wp_error( $scrub ) ) ) {
 				WP_CLI::error( "Unable to scrub user ID: {$user_id}" );
 			}
 
@@ -70,7 +78,7 @@ class JSONScrubber {
 			foreach ( $post_ids as $post_id ) {
 				$scrub = Helpers\scrub_object_by_type( $post_id, $post_type, 'post' );
 
-				if ( $show_errors && ( false === $scrub || is_wp_error( $scrub ) ) ) {
+				if ( $this->show_errors && ( false === $scrub || is_wp_error( $scrub ) ) ) {
 					WP_CLI::error( "Unable to scrub post ID: {$post_id}" );
 				}
 
@@ -85,7 +93,7 @@ class JSONScrubber {
 			foreach ( $revision_ids as $revision_id ) {
 				$scrub = Helpers\scrub_object_by_type( $revision_id, $post_type, 'revision' );
 
-				if ( $show_errors && ( false === $scrub || is_wp_error( $scrub ) ) ) {
+				if ( $this->show_errors && ( false === $scrub || is_wp_error( $scrub ) ) ) {
 					WP_CLI::error( "Unable to scrub revision ID: {$revision_id}" );
 				}
 
@@ -111,7 +119,7 @@ class JSONScrubber {
 			foreach ( $term_ids as $term_id ) {
 				$scrub = Helpers\scrub_object_by_type( $term_id, $taxonomy, 'term' );
 
-				if ( $show_errors && ( false === $scrub || is_wp_error( $scrub ) ) ) {
+				if ( $this->show_errors && ( false === $scrub || is_wp_error( $scrub ) ) ) {
 					WP_CLI::error( "Unable to scrub term ID: {$term_id}" );
 				}
 
@@ -126,6 +134,8 @@ class JSONScrubber {
 	 * Scrub options.
 	 */
 	public function scrub_options() {
+		global $wpdb;
+
 		if ( empty( $this->config->options ) ) {
 			return;
 		}
@@ -155,6 +165,8 @@ class JSONScrubber {
 	 * Scrub custom tables.
 	 */
 	public function scrub_custom_tables() {
+		global $wpdb;
+
 		if ( empty( $this->config->custom_tables ) ) {
 			return;
 		}
@@ -186,6 +198,8 @@ class JSONScrubber {
 	 * Truncate tables.
 	 */
 	public function truncate_tables() {
+		global $wpdb;
+
 		if ( empty( $this->config->truncate_tables ) ) {
 			return;
 		}

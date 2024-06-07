@@ -197,7 +197,7 @@ class Command extends WP_CLI_Command {
 			WP_CLI::error( 'Errors found in config file. Please correct them and try again.' );
 		}
 
-		$scrubber = new JSONScrubber( $config );
+		$scrubber = new JSONScrubber( $config, $show_errors );
 		$scrubber->scrub_users();
 		$scrubber->scrub_post_types();
 		$scrubber->scrub_taxonomies();
