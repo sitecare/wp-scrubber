@@ -13,12 +13,25 @@ namespace TenUpWPScrubber;
  */
 class JSONScrubber {
 
+	/**
+	 * JSON config.
+	 *
+	 * @var object
+	 */
 	protected $config;
 
+	/**
+	 * Constructor.
+	 *
+	 * @param object $config JSON config.
+	 */
 	public function __construct( $config ) {
 		$this->config = $config;
 	}
 
+	/**
+	 * Scrub user data.
+	 */
 	public function scrub_users() {
 		if ( empty( $config->user_data ) ) {
 			return;
@@ -40,6 +53,9 @@ class JSONScrubber {
 		$progress->finish();
 	}
 
+	/**
+	 * Scrub post types.
+	 */
 	public function scrub_post_types() {
 		if ( empty( $config->post_types ) ) {
 			return;
@@ -78,6 +94,9 @@ class JSONScrubber {
 		}
 	}
 
+	/**
+	 * Scrub taxonomies.
+	 */
 	public function scrub_taxonomies() {
 		if ( empty( $config->taxonomies ) ) {
 			return;
@@ -101,6 +120,9 @@ class JSONScrubber {
 		}
 	}
 
+	/**
+	 * Scrub options.
+	 */
 	public function scrub_options() {
 		if ( empty( $config->options ) ) {
 			return;
@@ -127,6 +149,9 @@ class JSONScrubber {
 		$progress->finish();
 	}
 
+	/**
+	 * Scrub custom tables.
+	 */
 	public function scrub_custom_tables() {
 		if ( empty( $config->custom_tables ) ) {
 			return;
@@ -155,6 +180,9 @@ class JSONScrubber {
 		}
 	}
 
+	/**
+	 * Truncate tables.
+	 */
 	public function truncate_tables() {
 		if ( empty( $config->truncate_tables ) ) {
 			return;
