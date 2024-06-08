@@ -137,7 +137,7 @@ class JSONValidation {
 				$this->errors[] = 'Invalid option configuration - Must be an object.';
 
 			} else {
-				$this->errors = array_merge( $this->errors, validate_field_config( $option, 'option' ) );
+				$this->errors = array_merge( $this->errors, $this->validate_field_config( $option, 'option' ) );
 			}
 		}
 	}
@@ -203,35 +203,63 @@ class JSONValidation {
 
 		if ( ! empty( $obj_config->fields ) ) {
 			if ( ! is_array( $obj_config->fields ) ) {
-				$errors[] = sprintf( 'Invalid %s fields configuration - Must be an array.', $parent );
+				$this->errors[] = sprintf( 'Invalid %s fields configuration - Must be an array.', $parent );
 
 			} else {
 				foreach ( $obj_config->fields as $field ) {
-					$errors = array_merge( $errors, validate_field_config( $field, $parent . ' field' ) );
+					$this->validate_field_config( $field, $parent . ' field' );
 				}
 			}
 		}
 
 		if ( ! empty( $obj_config->meta_fields ) ) {
 			if ( ! is_array( $obj_config->meta_fields ) ) {
-				$errors[] = sprintf( 'Invalid %s meta_fields configuration - Must be an array.', $parent );
+				$this->errors[] = sprintf( 'Invalid %s meta_fields configuration - Must be an array.', $parent );
 
 			} else {
 				foreach ( $obj_config->meta_fields as $meta_field ) {
-					$errors = array_merge( $errors, validate_field_config( $meta_field, $parent . ' meta_field' ) );
+					$this->validate_field_config( $meta_field, $parent . ' meta_field' );
 				}
 			}
 		}
 
 		if ( ! empty( $obj_config->columns ) ) {
 			if ( ! is_array( $obj_config->columns ) ) {
-				$errors[] = sprintf( 'Invalid %s columns configuration - Must be an array.', $parent );
+				$this->errors[] = sprintf( 'Invalid %s columns configuration - Must be an array.', $parent );
 
 			} else {
 				foreach ( $obj_config->columns as $column ) {
-					$errors = array_merge( $errors, validate_field_config( $column, $parent . ' column' ) );
+					$this->validate_field_config( $column, $parent . ' column' );
 				}
 			}
+		}
+
+	}
+
+	/**
+	 * Validate the field configuration.
+	 *
+	 * @param object $field   The field configuration object.
+	 * @param bool   $is_meta Whether the field is a meta field or not.
+	 *
+	 * @return mixed
+	 */
+	protected function validate_field_config( object $field, string $parent ): mixed {
+
+		if ( empty( $field->name ) ) {
+			$this->errors[] = sprintf( 'Invalid %s configuration - Missing field name.', $parent );
+		}
+
+		if ( empty( $field->action ) ) {
+			$this->errors[] = sprintf( 'Invalid %s configuration - Missing field action.', $parent );
+		}
+
+		if ( 'replace' === $field->action && ! isset( $field->value ) ) {
+			$this->errors[] = sprintf( 'Invalid %s configuration - Missing replace value.', $parent );
+		}
+
+		if ( 'faker' === $field->action && empty( $field->faker_type ) ) {
+			$this->errors[] = sprintf( 'Invalid %s configuration - Missing faker type.', $parent );
 		}
 
 	}
