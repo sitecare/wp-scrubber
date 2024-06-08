@@ -40,15 +40,15 @@ class JSONValidation {
 	 * Validate user data configuration.
 	 */
 	protected function validate_user_config() {
-		if ( empty( $config->user_data ) ) {
+		if ( empty( $this->config->user_data ) ) {
 			return;
 		}
 
-		if ( ! is_object( $config->user_data ) ) {
+		if ( ! is_object( $this->config->user_data ) ) {
 			$errors[] = 'Invalid user_data configuration - Must be an object.';
 
 		} else {
-			$errors = array_merge( $errors, validate_object_config( $config->user_data, 'user_data' ) );
+			$errors = array_merge( $errors, validate_object_config( $this->config->user_data, 'user_data' ) );
 		}
 
 	}
@@ -57,15 +57,15 @@ class JSONValidation {
 	 * Validate post types configuration.
 	 */
 	protected function validate_post_types_config() {
-		if ( empty( $config->post_types ) ) {
+		if ( empty( $this->config->post_types ) ) {
 			return;
 		}
 
-		if ( ! is_array( $config->post_types ) ) {
+		if ( ! is_array( $this->config->post_types ) ) {
 			$errors[] = 'Invalid post_types configuration - Must be an array.';
 		}
 
-		foreach ( $config->post_types as $post_type ) {
+		foreach ( $this->config->post_types as $post_type ) {
 			if ( ! is_object( $post_type ) ) {
 				$errors[] = 'Invalid post_type configuration - Must be an object.';
 
@@ -83,15 +83,15 @@ class JSONValidation {
 	 * Validate taxonomies configuration.
 	 */
 	protected function validate_taxonomies_config() {
-		if ( empty( $config->taxonomies ) ) {
+		if ( empty( $this->config->taxonomies ) ) {
 			return;
 		}
 
-		if ( ! is_array( $config->taxonomies ) ) {
+		if ( ! is_array( $this->config->taxonomies ) ) {
 			$errors[] = 'Invalid taxonomies configuration - Must be an array.';
 		}
 
-		foreach ( $config->taxonomies as $taxonomy ) {
+		foreach ( $this->config->taxonomies as $taxonomy ) {
 			if ( ! is_object( $taxonomy ) ) {
 				$errors[] = 'Invalid taxonomy configuration - Must be an object.';
 
@@ -110,15 +110,15 @@ class JSONValidation {
 	 * Validate options configuration.
 	 */
 	protected function validate_options_config() {
-		if ( empty( $config->options ) ) {
+		if ( empty( $this->config->options ) ) {
 			return;
 		}
 
-		if ( ! is_array( $config->options ) ) {
+		if ( ! is_array( $this->config->options ) ) {
 			$errors[] = 'Invalid options configuration - Must be an array.';
 		}
 
-		foreach ( $config->options as $option ) {
+		foreach ( $this->config->options as $option ) {
 			if ( ! is_object( $option ) ) {
 				$errors[] = 'Invalid option configuration - Must be an object.';
 
@@ -132,16 +132,16 @@ class JSONValidation {
 	 * Validate custom tables configuration.
 	 */
 	protected function validate_custom_tables_config() {
-		if ( empty( $config->custom_tables ) ) {
+		if ( empty( $this->config->custom_tables ) ) {
 			return;
 
 		}
 
-		if ( ! is_array( $config->custom_tables ) ) {
+		if ( ! is_array( $this->config->custom_tables ) ) {
 			$errors[] = 'Invalid custom_tables configuration - Must be an array.';
 		}
 
-		foreach ( $config->custom_tables as $custom_table ) {
+		foreach ( $this->config->custom_tables as $custom_table ) {
 			if ( ! is_object( $custom_table ) ) {
 				$errors[] = 'Invalid custom_table configuration - Must be an object.';
 
@@ -163,15 +163,15 @@ class JSONValidation {
 	 * Validate truncate configuration.
 	 */
 	protected function validate_truncate_config() {
-		if ( empty( $config->truncate_tables ) ) {
+		if ( empty( $this->config->truncate_tables ) ) {
 			return;
 		}
 
-		if ( ! is_array( $config->truncate_tables ) ) {
+		if ( ! is_array( $this->config->truncate_tables ) ) {
 			$errors[] = 'Invalid truncate_tables configuration - Must be an array.';
 		}
 
-		foreach ( $config->truncate_tables as $truncate_table ) {
+		foreach ( $this->config->truncate_tables as $truncate_table ) {
 			if ( ! is_string( $truncate_table ) ) {
 				$errors[] = 'Invalid table in truncate_tables - Must be a string.';
 			}
