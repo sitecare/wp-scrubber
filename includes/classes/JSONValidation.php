@@ -137,7 +137,7 @@ class JSONValidation {
 				$this->errors[] = 'Invalid option configuration - Must be an object.';
 
 			} else {
-				$this->errors = array_merge( $this->errors, $this->validate_field_config( $option, 'option' ) );
+				$this->validate_field_config( $option, 'option' );
 			}
 		}
 	}
@@ -242,9 +242,9 @@ class JSONValidation {
 	 * @param object $field   The field configuration object.
 	 * @param bool   $is_meta Whether the field is a meta field or not.
 	 *
-	 * @return mixed
+	 * @return void
 	 */
-	protected function validate_field_config( object $field, string $parent ): mixed {
+	protected function validate_field_config( object $field, string $parent ): void {
 
 		if ( empty( $field->name ) ) {
 			$this->errors[] = sprintf( 'Invalid %s configuration - Missing field name.', $parent );
