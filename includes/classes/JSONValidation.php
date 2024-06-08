@@ -16,8 +16,6 @@ use WP_CLI;
 class JSONValidation {
 
 	/**
-	 * JSON config.
-	 *
 	 * @var object
 	 */
 	protected $config;
@@ -38,6 +36,9 @@ class JSONValidation {
 		$this->validate_truncate_config();
 	}
 
+	/**
+	 * Validate user data configuration.
+	 */
 	protected function validate_user_config() {
 		if ( empty( $config->user_data ) ) {
 			return;
@@ -52,6 +53,9 @@ class JSONValidation {
 
 	}
 
+	/**
+	 * Validate post types configuration.
+	 */
 	protected function validate_post_types_config() {
 		if ( empty( $config->post_types ) ) {
 			return;
@@ -75,6 +79,9 @@ class JSONValidation {
 		}
 	}
 
+	/**
+	 * Validate taxonomies configuration.
+	 */
 	protected function validate_taxonomies_config() {
 		if ( empty( $config->taxonomies ) ) {
 			return;
@@ -99,6 +106,9 @@ class JSONValidation {
 		}
 	}
 
+	/**
+	 * Validate options configuration.
+	 */
 	protected function validate_options_config() {
 		if ( empty( $config->options ) ) {
 			return;
@@ -118,6 +128,9 @@ class JSONValidation {
 		}
 	}
 
+	/**
+	 * Validate custom tables configuration.
+	 */
 	protected function validate_custom_tables_config() {
 		if ( empty( $config->custom_tables ) ) {
 			return;
@@ -146,6 +159,9 @@ class JSONValidation {
 		}
 	}
 
+	/**
+	 * Validate truncate configuration.
+	 */
 	protected function validate_truncate_config() {
 		if ( empty( $config->truncate_tables ) ) {
 			return;
