@@ -21,6 +21,11 @@ class JSONValidation {
 	protected $config;
 
 	/**
+	 * @var array
+	 */
+	protected $errors = [];
+
+	/**
 	 * Constructor.
 	 *
 	 * @param object $config JSON config.
@@ -37,6 +42,15 @@ class JSONValidation {
 	}
 
 	/**
+	 * Get errors.
+	 *
+	 * @return array
+	 */
+	public function get_errors() {
+		return $this->errors;
+	}
+
+	/**
 	 * Validate user data configuration.
 	 */
 	protected function validate_user_config() {
@@ -45,10 +59,10 @@ class JSONValidation {
 		}
 
 		if ( ! is_object( $this->config->user_data ) ) {
-			$errors[] = 'Invalid user_data configuration - Must be an object.';
+			$this->errors[] = 'Invalid user_data configuration - Must be an object.';
 
 		} else {
-			$errors = array_merge( $errors, validate_object_config( $this->config->user_data, 'user_data' ) );
+			$this->errors = array_merge( $this->errors, validate_object_config( $this->config->user_data, 'user_data' ) );
 		}
 
 	}
@@ -62,19 +76,19 @@ class JSONValidation {
 		}
 
 		if ( ! is_array( $this->config->post_types ) ) {
-			$errors[] = 'Invalid post_types configuration - Must be an array.';
+			$this->errors[] = 'Invalid post_types configuration - Must be an array.';
 		}
 
 		foreach ( $this->config->post_types as $post_type ) {
 			if ( ! is_object( $post_type ) ) {
-				$errors[] = 'Invalid post_type configuration - Must be an object.';
+				$this->errors[] = 'Invalid post_type configuration - Must be an object.';
 
 			} else {
 				if ( empty( $post_type->name ) ) {
-					$errors[] = 'Invalid post_type configuration - Missing post type name.';
+					$this->errors[] = 'Invalid post_type configuration - Missing post type name.';
 				}
 
-				$errors = array_merge( $errors, validate_object_config( $post_type, 'post_type' ) );
+				$this->errors = array_merge( $this->errors, validate_object_config( $post_type, 'post_type' ) );
 			}
 		}
 	}
@@ -88,19 +102,19 @@ class JSONValidation {
 		}
 
 		if ( ! is_array( $this->config->taxonomies ) ) {
-			$errors[] = 'Invalid taxonomies configuration - Must be an array.';
+			$this->errors[] = 'Invalid taxonomies configuration - Must be an array.';
 		}
 
 		foreach ( $this->config->taxonomies as $taxonomy ) {
 			if ( ! is_object( $taxonomy ) ) {
-				$errors[] = 'Invalid taxonomy configuration - Must be an object.';
+				$this->errors[] = 'Invalid taxonomy configuration - Must be an object.';
 
 			} else {
 				if ( empty( $taxonomy->name ) ) {
-					$errors[] = 'Invalid taxonomy configuration - Missing taxonomy name.';
+					$this->errors[] = 'Invalid taxonomy configuration - Missing taxonomy name.';
 				}
 
-				$errors = array_merge( $errors, validate_object_config( $taxonomy, 'taxonomy' ) );
+				$this->errors = array_merge( $this->errors, validate_object_config( $taxonomy, 'taxonomy' ) );
 			}
 
 		}
@@ -115,15 +129,15 @@ class JSONValidation {
 		}
 
 		if ( ! is_array( $this->config->options ) ) {
-			$errors[] = 'Invalid options configuration - Must be an array.';
+			$this->errors[] = 'Invalid options configuration - Must be an array.';
 		}
 
 		foreach ( $this->config->options as $option ) {
 			if ( ! is_object( $option ) ) {
-				$errors[] = 'Invalid option configuration - Must be an object.';
+				$this->errors[] = 'Invalid option configuration - Must be an object.';
 
 			} else {
-				$errors = array_merge( $errors, validate_field_config( $option, 'option' ) );
+				$this->errors = array_merge( $this->errors, validate_field_config( $option, 'option' ) );
 			}
 		}
 	}
@@ -138,23 +152,23 @@ class JSONValidation {
 		}
 
 		if ( ! is_array( $this->config->custom_tables ) ) {
-			$errors[] = 'Invalid custom_tables configuration - Must be an array.';
+			$this->errors[] = 'Invalid custom_tables configuration - Must be an array.';
 		}
 
 		foreach ( $this->config->custom_tables as $custom_table ) {
 			if ( ! is_object( $custom_table ) ) {
-				$errors[] = 'Invalid custom_table configuration - Must be an object.';
+				$this->errors[] = 'Invalid custom_table configuration - Must be an object.';
 
 			} else {
 				if ( empty( $custom_table->name ) ) {
-					$errors[] = 'Invalid custom_table configuration - Missing table name.';
+					$this->errors[] = 'Invalid custom_table configuration - Missing table name.';
 				}
 
 				if ( empty( $custom_table->primary_key ) ) {
-					$errors[] = 'Invalid custom_table configuration - Missing primary key.';
+					$this->errors[] = 'Invalid custom_table configuration - Missing primary key.';
 				}
 
-				$errors = array_merge( $errors, validate_object_config( $custom_table, 'custom_table' ) );
+				$this->errors = array_merge( $this->errors, validate_object_config( $custom_table, 'custom_table' ) );
 			}
 		}
 	}
@@ -168,12 +182,12 @@ class JSONValidation {
 		}
 
 		if ( ! is_array( $this->config->truncate_tables ) ) {
-			$errors[] = 'Invalid truncate_tables configuration - Must be an array.';
+			$this->errors[] = 'Invalid truncate_tables configuration - Must be an array.';
 		}
 
 		foreach ( $this->config->truncate_tables as $truncate_table ) {
 			if ( ! is_string( $truncate_table ) ) {
-				$errors[] = 'Invalid table in truncate_tables - Must be a string.';
+				$this->errors[] = 'Invalid table in truncate_tables - Must be a string.';
 			}
 		}
 	}
