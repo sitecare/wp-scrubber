@@ -16,11 +16,15 @@ use WP_CLI;
 class JSONValidation {
 
 	/**
+	 * The JSON config.
+	 *
 	 * @var object
 	 */
 	protected $config;
 
 	/**
+	 * Validation errors.
+	 *
 	 * @var array
 	 */
 	protected $errors = [];
@@ -64,7 +68,6 @@ class JSONValidation {
 		} else {
 			$this->validate_object_config( $this->config->user_data, 'user_data' );
 		}
-
 	}
 
 	/**
@@ -116,7 +119,6 @@ class JSONValidation {
 
 				$this->validate_object_config( $taxonomy, 'taxonomy' );
 			}
-
 		}
 	}
 
@@ -196,10 +198,11 @@ class JSONValidation {
 	 * Validate the object configuration.
 	 *
 	 * @param object $obj_config The object configuration object.
+	 * @param string $parent     The parent object name.
 	 *
 	 * @return void
 	 */
-	protected function validate_object_config( object $obj_config, string $parent ): void {
+	protected function validate_object_config( object $obj_config, string $parent ): void { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames
 
 		if ( ! empty( $obj_config->fields ) ) {
 			if ( ! is_array( $obj_config->fields ) ) {
@@ -233,18 +236,17 @@ class JSONValidation {
 				}
 			}
 		}
-
 	}
 
 	/**
 	 * Validate the field configuration.
 	 *
 	 * @param object $field   The field configuration object.
-	 * @param bool   $is_meta Whether the field is a meta field or not.
+	 * @param string $parent  The parent field name.
 	 *
 	 * @return void
 	 */
-	protected function validate_field_config( object $field, string $parent ): void {
+	protected function validate_field_config( object $field, string $parent ): void { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames
 
 		if ( empty( $field->name ) ) {
 			$this->errors[] = sprintf( 'Invalid %s configuration - Missing field name.', $parent );
@@ -261,7 +263,5 @@ class JSONValidation {
 		if ( 'faker' === $field->action && empty( $field->faker_type ) ) {
 			$this->errors[] = sprintf( 'Invalid %s configuration - Missing faker type.', $parent );
 		}
-
 	}
-
 }

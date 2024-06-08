@@ -33,9 +33,10 @@ class JSONScrubber {
 	 * Constructor.
 	 *
 	 * @param object $config JSON config.
+	 * @param bool   $show_errors Show DB errors.
 	 */
 	public function __construct( $config, $show_errors = true ) {
-		$this->config = $config;
+		$this->config      = $config;
 		$this->show_errors = $show_errors;
 	}
 
