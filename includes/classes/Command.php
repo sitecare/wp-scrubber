@@ -188,7 +188,8 @@ class Command extends WP_CLI_Command {
 
 		$config_json   = file_get_contents( $config_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 		$config        = json_decode( $config_json );
-		$config_errors = Helpers\validate_scrubber_config( $config );
+		$validation    = new JSONValidation( $config );
+		$config_errors = $validation->get_errors();
 
 		if ( ! empty( $config_errors ) ) {
 			foreach ( $config_errors as $error ) {

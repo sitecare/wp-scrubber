@@ -62,7 +62,7 @@ class JSONValidation {
 			$this->errors[] = 'Invalid user_data configuration - Must be an object.';
 
 		} else {
-			$this->errors = array_merge( $this->errors, validate_object_config( $this->config->user_data, 'user_data' ) );
+			$this->validate_object_config( $this->config->user_data, 'user_data' );
 		}
 
 	}
@@ -88,7 +88,7 @@ class JSONValidation {
 					$this->errors[] = 'Invalid post_type configuration - Missing post type name.';
 				}
 
-				$this->errors = array_merge( $this->errors, validate_object_config( $post_type, 'post_type' ) );
+				$this->validate_object_config( $post_type, 'post_type' );
 			}
 		}
 	}
@@ -114,7 +114,7 @@ class JSONValidation {
 					$this->errors[] = 'Invalid taxonomy configuration - Missing taxonomy name.';
 				}
 
-				$this->errors = array_merge( $this->errors, validate_object_config( $taxonomy, 'taxonomy' ) );
+				$this->validate_object_config( $taxonomy, 'taxonomy' );
 			}
 
 		}
@@ -168,7 +168,7 @@ class JSONValidation {
 					$this->errors[] = 'Invalid custom_table configuration - Missing primary key.';
 				}
 
-				$this->errors = array_merge( $this->errors, validate_object_config( $custom_table, 'custom_table' ) );
+				$this->validate_object_config( $custom_table, 'custom_table' );
 			}
 		}
 	}
@@ -190,6 +190,50 @@ class JSONValidation {
 				$this->errors[] = 'Invalid table in truncate_tables - Must be a string.';
 			}
 		}
+	}
+
+	/**
+	 * Validate the object configuration.
+	 *
+	 * @param object $obj_config The object configuration object.
+	 *
+	 * @return void
+	 */
+	protected function validate_object_config( object $obj_config, string $parent ): void {
+
+		if ( ! empty( $obj_config->fields ) ) {
+			if ( ! is_array( $obj_config->fields ) ) {
+				$errors[] = sprintf( 'Invalid %s fields configuration - Must be an array.', $parent );
+
+			} else {
+				foreach ( $obj_config->fields as $field ) {
+					$errors = array_merge( $errors, validate_field_config( $field, $parent . ' field' ) );
+				}
+			}
+		}
+
+		if ( ! empty( $obj_config->meta_fields ) ) {
+			if ( ! is_array( $obj_config->meta_fields ) ) {
+				$errors[] = sprintf( 'Invalid %s meta_fields configuration - Must be an array.', $parent );
+
+			} else {
+				foreach ( $obj_config->meta_fields as $meta_field ) {
+					$errors = array_merge( $errors, validate_field_config( $meta_field, $parent . ' meta_field' ) );
+				}
+			}
+		}
+
+		if ( ! empty( $obj_config->columns ) ) {
+			if ( ! is_array( $obj_config->columns ) ) {
+				$errors[] = sprintf( 'Invalid %s columns configuration - Must be an array.', $parent );
+
+			} else {
+				foreach ( $obj_config->columns as $column ) {
+					$errors = array_merge( $errors, validate_field_config( $column, $parent . ' column' ) );
+				}
+			}
+		}
+
 	}
 
 }
