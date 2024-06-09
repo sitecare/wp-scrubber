@@ -52,7 +52,7 @@ class JSONScrubber {
 		$progress = \WP_CLI\Utils\make_progress_bar( 'Scrubbing user data', count( $user_ids ) );
 
 		foreach ( $user_ids as $user_id ) {
-			$scrub = Helpers\scrub_object_by_type( $user_id, $this->config->user_data, 'user' );
+			$scrub = $this->scrub_object_by_type( $user_id, $this->config->user_data, 'user' );
 
 			if ( $this->show_errors && ( false === $scrub || is_wp_error( $scrub ) ) ) {
 				WP_CLI::error( "Unable to scrub user ID: {$user_id}" );
@@ -77,7 +77,7 @@ class JSONScrubber {
 			$progress = \WP_CLI\Utils\make_progress_bar( "Scrubbing {$post_type->name} posts", count( $post_ids ) );
 
 			foreach ( $post_ids as $post_id ) {
-				$scrub = Helpers\scrub_object_by_type( $post_id, $post_type, 'post' );
+				$scrub = $this->scrub_object_by_type( $post_id, $post_type, 'post' );
 
 				if ( $this->show_errors && ( false === $scrub || is_wp_error( $scrub ) ) ) {
 					WP_CLI::error( "Unable to scrub post ID: {$post_id}" );
@@ -92,7 +92,7 @@ class JSONScrubber {
 			$progress     = \WP_CLI\Utils\make_progress_bar( "Scrubbing {$post_type->name} revisions", count( $revision_ids ) );
 
 			foreach ( $revision_ids as $revision_id ) {
-				$scrub = Helpers\scrub_object_by_type( $revision_id, $post_type, 'revision' );
+				$scrub = $this->scrub_object_by_type( $revision_id, $post_type, 'revision' );
 
 				if ( $this->show_errors && ( false === $scrub || is_wp_error( $scrub ) ) ) {
 					WP_CLI::error( "Unable to scrub revision ID: {$revision_id}" );
@@ -118,7 +118,7 @@ class JSONScrubber {
 			$progress = \WP_CLI\Utils\make_progress_bar( "Scrubbing {$taxonomy->name} terms", count( $term_ids ) );
 
 			foreach ( $term_ids as $term_id ) {
-				$scrub = Helpers\scrub_object_by_type( $term_id, $taxonomy, 'term' );
+				$scrub = $this->scrub_object_by_type( $term_id, $taxonomy, 'term' );
 
 				if ( $this->show_errors && ( false === $scrub || is_wp_error( $scrub ) ) ) {
 					WP_CLI::error( "Unable to scrub term ID: {$term_id}" );
@@ -151,7 +151,7 @@ class JSONScrubber {
 			} else {
 				$wpdb->update(
 					$wpdb->options,
-					[ 'option_value' => Helpers\get_field_data_by_action( $option ) ],
+					[ 'option_value' => $this->get_field_data_by_action( $option ) ],
 					[ 'option_name' => $option->name ]
 				);
 			}
@@ -183,7 +183,7 @@ class JSONScrubber {
 				$new_data = [];
 
 				foreach ( $table->columns as $field ) {
-					$new_data[ $field->name ] = Helpers\get_field_data_by_action( $field );
+					$new_data[ $field->name ] = $this->get_field_data_by_action( $field );
 				}
 
 				$wpdb->update( $name, $new_data, [ $pk => $id ] );
@@ -213,5 +213,166 @@ class JSONScrubber {
 		}
 
 		$progress->finish();
+	}
+
+	/**
+	 * Scrubs an object by type.
+	 *
+	 * @param int    $object_id     The ID of the object to scrub.
+	 * @param object $object_config The configuration object for the object.
+	 * @param string $object_type   The type of the object. Defaults to 'post'.
+	 *
+	 * TODO: add error messages instead of false returns
+	 *
+	 * @return bool|\WP_Error The result of the scrub operation. True on success, false or WP_Error on failure.
+	 */
+	protected function scrub_object_by_type( int $object_id, object $object_config, string $object_type ): bool|\WP_Error {
+		global $wpdb;
+
+		switch ( $object_type ) {
+			case 'user':
+				$table = $wpdb->users;
+				$pk    = 'ID';
+				break;
+
+			case 'term':
+				$table = $wpdb->terms;
+				$pk    = 'term_id';
+				break;
+
+			case 'revision':
+			case 'post':
+			default:
+				$table = $wpdb->posts;
+				$pk    = 'ID';
+				break;
+		}
+
+		if ( ! empty( $object_config->fields ) ) {
+			$new_data = [];
+
+			foreach ( $object_config->fields as $field ) {
+				$new_value = $this->get_field_data_by_action( $field );
+
+				if ( is_wp_error( $new_value ) ) {
+					return $new_value;
+				}
+
+				if ( 'term' === $object_type && 'description' === $field->name ) {
+					$wpdb->update(
+						$wpdb->term_taxonomy,
+						[ 'description' => $new_value ],
+						[
+							'term_id'  => $object_id,
+							'taxonomy' => $object_config->name,
+						]
+					);
+
+				} else {
+					$new_data[ $field->name ] = $new_value;
+				}
+			}
+
+			$wpdb->update( $table, $new_data, [ $pk => $object_id ] );
+		}
+
+		if ( 'revision' !== $object_type && ! empty( $object_config->meta_fields ) ) {
+
+			foreach ( $object_config->meta_fields as $meta_field ) {
+				$result = $this->scrub_meta_field( $object_id, $meta_field, $object_type );
+
+				if ( false === $result || is_wp_error( $result ) ) {
+					return $result;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Scrub the meta field.
+	 *
+	 * @param int    $object_id     The object ID.
+	 * @param object $field_config The field configuration object.
+	 * @param string $object_type  The object type.
+	 *
+	 * @return bool|\WP_Error The result of the scrub operation. True on success, false or WP_Error on failure.
+	 */
+	protected function scrub_meta_field( int $object_id, object $field_config, string $object_type ): bool|\WP_Error {
+		global $wpdb;
+
+		$meta_key = $field_config->name;
+
+		switch ( $object_type ) {
+			case 'user':
+				$table      = $wpdb->usermeta;
+				$object_key = 'user_id';
+				break;
+
+			case 'term':
+				$table      = $wpdb->termmeta;
+				$object_key = 'term_id';
+				break;
+
+			case 'post':
+			default:
+				$table      = $wpdb->postmeta;
+				$object_key = 'post_id';
+				break;
+		}
+
+		if ( 'remove' === $field_config->action ) {
+			return false !== $wpdb->delete(
+				$table,
+				[
+					$object_key => $object_id,
+					'meta_key'  => $meta_key,
+				]
+			);
+
+		} else {
+			$meta_value = $this->get_field_data_by_action( $field_config );
+
+			if ( is_wp_error( $meta_value ) ) {
+				return $meta_value;
+			}
+
+			return false !== $wpdb->update(
+				$table,
+				[ 'meta_value' => $meta_value ],
+				[
+					$object_key => $object_id,
+					'meta_key'  => $meta_key,
+				]
+			);
+		}
+	}
+
+	/**
+	 * Retrieves the data for a given field based on its action.
+	 *
+	 * @param object $field The field object.
+	 *
+	 * @return mixed The data for the field.
+	 */
+	protected function get_field_data_by_action( object $field ): mixed {
+		$data = null;
+
+		switch ( $field->action ) {
+			case 'remove':
+				$data = '';
+				break;
+
+			case 'replace':
+				$data = $field->value;
+				break;
+
+			case 'faker':
+				$data = Helpers\get_fake_data( $field->faker_type );
+				break;
+		}
+
+		return $data;
 	}
 }
