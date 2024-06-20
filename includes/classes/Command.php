@@ -35,10 +35,25 @@ class Command extends WP_CLI_Command {
 				'allowed-domains'   => '',
 				'allowed-emails'    => '',
 				'ignore-size-limit' => '',
+				'config'            => null,
+				'ignore-config'     => null,
+				'ignore-db-errors'  => false,
 			)
 		);
 
-		$assoc_args = wp_parse_args( $assoc_args, $defaults );
+		$assoc_args    = wp_parse_args( $assoc_args, $defaults );
+		$use_config    = ! empty( $assoc_args['config'] );
+		$ignore_config = ! empty( $assoc_args['ignore-config'] );
+
+		if ( $use_config ) {
+			return $this->from_config( $args, $assoc_args );
+		}
+
+		$config_path = trailingslashit( WP_CONTENT_DIR ) . 'wp-scrubber.json';
+
+		if ( file_exists( $config_path ) && ! $ignore_config ) {
+			return $this->from_config( $args, $assoc_args );
+		}
 
 		$allowed_domains = [
 			'get10up.com',
@@ -99,6 +114,9 @@ class Command extends WP_CLI_Command {
 	 * [--ignore-size-limit]
 	 * : Ignore the database size limit.
 	 *
+	 * [--ignore-db-errors]
+	 * : Ignore scrubbing errors during runtime.
+	 *
 	 * @param array $args       Positional arguments passed to the command.
 	 * @param array $assoc_args Associative arguments passed to the command.
 	 * @return void
@@ -153,16 +171,12 @@ class Command extends WP_CLI_Command {
 	 * [<path>]
 	 * : Path to the JSON config file relative to wp-content/ - Defaults to wp-scrubber.json
 	 *
-	 * [--ignore-db-errors]
-	 * : Ignore scrubbing errors during runtime.
-	 *
 	 * @param array $args       Positional arguments passed to the command.
 	 * @param array $assoc_args Associative arguments passed to the command.
 	 * @return void
 	 *
-	 * @alias from-config
 	 */
-	public function from_config( $args, $assoc_args ) {
+	protected function from_config( $args, $assoc_args ) {
 		global $wpdb;
 
 		$config_file = 'wp-scrubber.json';
