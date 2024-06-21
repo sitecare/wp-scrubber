@@ -103,6 +103,10 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertInstanceOf( '\WP_Error', $result );
 	}
 
+	/**
+	 * Test case for the `scrub_meta_field` method.
+	 * Tests the `user` object type.
+	 */
 	public function test_scrub_meta_field_user() {
 		global $wpdb;
 
@@ -140,6 +144,10 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertConditionsMet();
 	}
 
+	/**
+	 * Test case for the `scrub_meta_field` method.
+	 * Tests the `term` object type.
+	 */
 	public function test_scrub_meta_field_term() {
 		global $wpdb;
 
@@ -177,6 +185,10 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertConditionsMet();
 	}
 
+	/**
+	 * Test case for the `scrub_meta_field` method.
+	 * Tests the `post` object type.
+	 */
 	public function test_scrub_meta_field_post() {
 		global $wpdb;
 
