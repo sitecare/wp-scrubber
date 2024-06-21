@@ -127,7 +127,7 @@ final class JSONScrubberTests extends TestCase {
 				'wp_usermeta',
 				['meta_value' => 'foobar'],
 				[
-					'user_id' => 123,
+					'user_id'  => 123,
 					'meta_key' => 'meta_field'
 				]
 			)
@@ -135,6 +135,43 @@ final class JSONScrubberTests extends TestCase {
 
 		$config = json_decode( json_encode( $_config ) );
 		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'user' ] );
+
+		$this->assertTrue( $result );
+		$this->assertConditionsMet();
+	}
+
+	public function test_scrub_meta_field_term() {
+		global $wpdb;
+
+		$scrubber = new JSONScrubber( new stdClass(), false );
+		$method   = $this->getInaccessibleMethod( $scrubber, 'scrub_meta_field' );
+		$_config  = [
+			'name'   => 'meta_field',
+			'action' => 'replace',
+			'value'  => 'foobar'
+		];
+
+		$wpdb = Mockery::mock('WPDB');
+		$wpdb->termmeta = 'wp_termmeta';
+
+		WP_Mock::userFunction('is_wp_error')
+			->once()
+			->andReturn( false );
+
+		$wpdb->allows( 'update' )
+			->once()
+			->with(
+				'wp_termmeta',
+				['meta_value' => 'foobar'],
+				[
+					'term_id'  => 123,
+					'meta_key' => 'meta_field'
+				]
+			)
+			->andReturn( true );
+
+		$config = json_decode( json_encode( $_config ) );
+		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'term' ] );
 
 		$this->assertTrue( $result );
 		$this->assertConditionsMet();
