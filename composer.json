@@ -13,11 +13,14 @@
     "fakerphp/faker": "^1.23"
   },
   "require-dev": {
-    "10up/phpcs-composer": "^3.0.0"
+    "10up/phpcs-composer": "^3.0.0",
+    "10up/wp_mock": "^1.0",
+    "phpunit/phpunit": "^9.6"
   },
   "scripts": {
     "lint": "phpcs -s .",
-    "lint-fix": "phpcbf ."
+    "lint-fix": "phpcbf .",
+	"phpunit": "phpunit --bootstrap ./bootstrap.php ./tests/*.php"
   },
   "autoload": {
     "psr-4": {
