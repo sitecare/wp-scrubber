@@ -226,6 +226,10 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertConditionsMet();
 	}
 
+	/**
+	 * Test case for the `scrub_meta_field` method.
+	 * Tests the `remove` action.
+	 */
 	public function test_scrub_meta_field_remove() {
 		global $wpdb;
 
