@@ -226,6 +226,37 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertConditionsMet();
 	}
 
+	public function test_scrub_meta_field_remove() {
+		global $wpdb;
+
+		$scrubber = new JSONScrubber( new stdClass(), false );
+		$method   = $this->getInaccessibleMethod( $scrubber, 'scrub_meta_field' );
+		$_config  = [
+			'name'   => 'meta_field',
+			'action' => 'remove',
+		];
+
+		$wpdb = Mockery::mock('WPDB');
+		$wpdb->termmeta = 'wp_termmeta';
+
+		$wpdb->allows( 'delete' )
+			->once()
+			->with(
+				'wp_termmeta',
+				[
+					'term_id' => 123,
+					'meta_key' => 'meta_field',
+				]
+			)
+			->andReturn( true );
+
+		$config = json_decode( json_encode( $_config ) );
+		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'term' ] );
+
+		$this->assertTrue( $result );
+		$this->assertConditionsMet();
+	}
+
 	/**
 	 * Test case for the `scrub_object_by_type` method.
 	 * Tests the `user` type.
