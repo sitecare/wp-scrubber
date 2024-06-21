@@ -26,8 +26,7 @@ final class JSONScrubberTests extends TestCase {
 			'value'  => 'Jane Doe'
 		];
 
-		$field = json_decode( json_encode( $_field ) );
-
+		$field  = json_decode( json_encode( $_field ) );
 		$result = $method->invokeArgs( $scrubber, [ $field ] );
 
 		$this->assertEquals( 'Jane Doe', $result );
@@ -41,11 +40,25 @@ final class JSONScrubberTests extends TestCase {
 			'action' => 'remove',
 		];
 
-		$field = json_decode( json_encode( $_field ) );
-
+		$field  = json_decode( json_encode( $_field ) );
 		$result = $method->invokeArgs( $scrubber, [ $field ] );
 
 		$this->assertEquals( '', $result );
+	}
+
+	public function test_get_field_data_by_action_faker() {
+		$scrubber = new JSONScrubber( new stdClass(), false );
+		$method   = $this->getInaccessibleMethod( $scrubber, 'get_field_data_by_action' );
+		$_field   = [
+			'name'       => 'display_name',
+			'action'     => 'faker',
+			'faker_type' => 'randomDigit'
+		];
+
+		$field  = json_decode( json_encode( $_field ) );
+		$result = $method->invokeArgs( $scrubber, [ $field ] );
+
+		$this->assertIsInt( $result );
 	}
 
 	public function test_scrub_object_by_type_user() {
