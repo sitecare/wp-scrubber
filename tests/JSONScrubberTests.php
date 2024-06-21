@@ -20,9 +20,8 @@ final class JSONScrubberTests extends TestCase {
 	public function test_scrub_object_by_type_user() {
 		global $wpdb;
 
-		$class    = new ReflectionClass( 'TenUpWPScrubber\JSONScrubber' );
-		$method   = $class->getMethod( 'scrub_object_by_type' );
-		$scrubber = new TenUpWPScrubber\JSONScrubber( new stdClass(), false );
+		$scrubber = new JSONScrubber( new stdClass(), false );
+		$method   = $this->getInaccessibleMethod( $scrubber, 'scrub_object_by_type' );
 		$_config  = [
 			'fields' => [
 				[
