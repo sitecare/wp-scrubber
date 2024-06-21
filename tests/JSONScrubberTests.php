@@ -83,6 +83,27 @@ final class JSONScrubberTests extends TestCase {
 	}
 
 	/**
+	 * Test case for the `get_field_data_by_action` method.
+	 * Tests the `faker` action.
+	 */
+	public function test_get_field_data_by_action_faker_error() {
+		$scrubber = new JSONScrubber( new stdClass(), false );
+		$method   = $this->getInaccessibleMethod( $scrubber, 'get_field_data_by_action' );
+		$_field   = [
+			'name'       => 'display_name',
+			'action'     => 'faker',
+			'faker_type' => 'thisIsNotAValidFakerType'
+		];
+
+		Mockery::mock( '\WP_Error' );
+
+		$field  = json_decode( json_encode( $_field ) );
+		$result = $method->invokeArgs( $scrubber, [ $field ] );
+
+		$this->assertInstanceOf( '\WP_Error', $result );
+	}
+
+	/**
 	 * Test case for the `scrub_object_by_type` method.
 	 * Tests the `user` type.
 	 */
