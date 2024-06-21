@@ -33,6 +33,21 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertEquals( 'Jane Doe', $result );
 	}
 
+	public function test_get_field_data_by_action_remove() {
+		$scrubber = new JSONScrubber( new stdClass(), false );
+		$method   = $this->getInaccessibleMethod( $scrubber, 'get_field_data_by_action' );
+		$_field   = [
+			'name'   => 'display_name',
+			'action' => 'remove',
+		];
+
+		$field = json_decode( json_encode( $_field ) );
+
+		$result = $method->invokeArgs( $scrubber, [ $field ] );
+
+		$this->assertEquals( '', $result );
+	}
+
 	public function test_scrub_object_by_type_user() {
 		global $wpdb;
 
