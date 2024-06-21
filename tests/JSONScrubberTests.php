@@ -3,8 +3,16 @@
 use WP_Mock\Tools\TestCase;
 use TenUpWPScrubber\JSONScrubber;
 
+/**
+ * Class JSONScrubberTests
+ *
+ * This class contains unit tests for the JSONScrubber class.
+ */
 final class JSONScrubberTests extends TestCase {
 
+	/**
+	 * Test the instance creation of JSONScrubber.
+	 */
 	public function test_instance() {
 		$config = new stdClass();
 		$config->foo = 'bar';
@@ -17,6 +25,11 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertFalse( $show_errors );
 	}
 
+
+	/**
+	 * Test case for the `get_field_data_by_action` method.
+	 * Tests the `replace` action.
+	 */
 	public function test_get_field_data_by_action_replace() {
 		$scrubber = new JSONScrubber( new stdClass(), false );
 		$method   = $this->getInaccessibleMethod( $scrubber, 'get_field_data_by_action' );
@@ -32,6 +45,10 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertEquals( 'Jane Doe', $result );
 	}
 
+	/**
+	 * Test case for the `get_field_data_by_action` method.
+	 * Tests the `remove` action.
+	 */
 	public function test_get_field_data_by_action_remove() {
 		$scrubber = new JSONScrubber( new stdClass(), false );
 		$method   = $this->getInaccessibleMethod( $scrubber, 'get_field_data_by_action' );
@@ -46,6 +63,10 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertEquals( '', $result );
 	}
 
+	/**
+	 * Test case for the `get_field_data_by_action` method.
+	 * Tests the `faker` action.
+	 */
 	public function test_get_field_data_by_action_faker() {
 		$scrubber = new JSONScrubber( new stdClass(), false );
 		$method   = $this->getInaccessibleMethod( $scrubber, 'get_field_data_by_action' );
@@ -61,6 +82,10 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertIsInt( $result );
 	}
 
+	/**
+	 * Test case for the `scrub_object_by_type` method.
+	 * Tests the `user` type.
+	 */
 	public function test_scrub_object_by_type_user() {
 		global $wpdb;
 
