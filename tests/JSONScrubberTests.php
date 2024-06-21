@@ -3,7 +3,7 @@
 use WP_Mock\Tools\TestCase;
 use TenUpWPScrubber\JSONScrubber;
 
-class JSONScrubberTests extends TestCase {
+final class JSONScrubberTests extends TestCase {
 
 	public function test_instance() {
 		$config = new stdClass();
@@ -17,14 +17,42 @@ class JSONScrubberTests extends TestCase {
 		$this->assertFalse( $show_errors );
 	}
 
-	protected function test_scrub_object_by_type() {
+	public function test_scrub_object_by_type_user() {
+		global $wpdb;
+
 		$class    = new ReflectionClass( 'TenUpWPScrubber\JSONScrubber' );
 		$method   = $class->getMethod( 'scrub_object_by_type' );
 		$scrubber = new TenUpWPScrubber\JSONScrubber( new stdClass(), false );
-		$config   = new stdClass();
+		$_config  = [
+			'fields' => [
+				[
+					'name'   => 'display_name',
+					'action' => 'replace',
+					'value'  => 'Jane Doe'
+				]
+			],
+		];
 
+		$wpdb = Mockery::mock('WPDB');
+		$wpdb->users = 'wp_users';
+
+		WP_Mock::userFunction('is_wp_error')
+			->once()
+			->andReturn( false );
+
+		$wpdb->allows( 'update' )
+			->once()
+			->with(
+				'wp_users',
+				['display_name' => 'Jane Doe'],
+				[ 'ID' => 123 ]
+			);
+
+
+		$config = json_decode( json_encode( $_config ) );
 		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'user' ] );
 
-		var_dump( $results );
+		$this->assertTrue( $result );
+		$this->assertConditionsMet();
 	}
 }
