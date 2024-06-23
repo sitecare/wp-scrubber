@@ -303,6 +303,10 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertConditionsMet();
 	}
 
+	/**
+	 * Test case for the `scrub_object_by_type` method.
+	 * Tests the `term` type.
+	 */
 	public function test_scrub_object_by_type_term() {
 		global $wpdb;
 
