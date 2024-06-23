@@ -129,7 +129,7 @@ final class JSONScrubberTests extends TestCase {
 			->once()
 			->with(
 				'wp_usermeta',
-				['meta_value' => 'foobar'],
+				[ 'meta_value' => 'foobar' ],
 				[
 					'user_id'  => 123,
 					'meta_key' => 'meta_field'
@@ -170,7 +170,7 @@ final class JSONScrubberTests extends TestCase {
 			->once()
 			->with(
 				'wp_termmeta',
-				['meta_value' => 'foobar'],
+				[ 'meta_value' => 'foobar' ],
 				[
 					'term_id'  => 123,
 					'meta_key' => 'meta_field'
@@ -211,7 +211,7 @@ final class JSONScrubberTests extends TestCase {
 			->once()
 			->with(
 				'wp_postmeta',
-				['meta_value' => 'foobar'],
+				[ 'meta_value' => 'foobar' ],
 				[
 					'post_id'  => 123,
 					'meta_key' => 'meta_field'
@@ -291,13 +291,56 @@ final class JSONScrubberTests extends TestCase {
 			->once()
 			->with(
 				'wp_users',
-				['display_name' => 'Jane Doe'],
+				[ 'display_name' => 'Jane Doe' ],
 				[ 'ID' => 123 ]
 			);
 
 
 		$config = json_decode( json_encode( $_config ) );
 		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'user' ] );
+
+		$this->assertTrue( $result );
+		$this->assertConditionsMet();
+	}
+
+	public function test_scrub_object_by_type_term() {
+		global $wpdb;
+
+		$scrubber = new JSONScrubber( new stdClass(), false );
+		$method   = $this->getInaccessibleMethod( $scrubber, 'scrub_object_by_type' );
+		$_config  = [
+			'name'   => 'text_tax',
+			'fields' => [
+				[
+					'name'   => 'description',
+					'action' => 'replace',
+					'value'  => 'Lorem Ipsum'
+				]
+			],
+		];
+
+		$wpdb = Mockery::mock('WPDB');
+		$wpdb->terms = 'wp_terms';
+		$wpdb->term_taxonomy = 'wp_term_taxonomy';
+
+		WP_Mock::userFunction('is_wp_error')
+			->once()
+			->andReturn( false );
+
+		$wpdb->allows( 'update' )
+			->once()
+			->with(
+				'wp_term_taxonomy',
+				[ 'description' => 'Lorem Ipsum' ],
+				[
+					'term_id' => 123,
+					'taxonomy' => 'text_tax'
+				],
+			);
+
+
+		$config = json_decode( json_encode( $_config ) );
+		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'term' ] );
 
 		$this->assertTrue( $result );
 		$this->assertConditionsMet();
