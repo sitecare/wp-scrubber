@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/classes/TestScrubber.php';
+
 use WP_Mock\Tools\TestCase;
 use TenUpWPScrubber\JSONScrubber;
 
@@ -422,6 +424,58 @@ final class JSONScrubberTests extends TestCase {
 		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'term' ] );
 
 		$this->assertTrue( $result );
+		$this->assertConditionsMet();
+	}
+
+	/**
+	 * Test case for the `scrub_users` method.
+	 * Tests results for empty config.
+	 */
+	public function test_scrub_users_no_config() {
+		$scrubber = new JSONScrubber( new stdClass(), false );
+		$result   = $scrubber->scrub_users();
+
+		$this->assertNull( $result );
+	}
+
+	public function test_scrub_users() {
+		global $wpdb;
+
+		$_config  = [
+			'user_data' => [
+				'fields' => [
+					[
+						'name'   => 'display_name',
+						'action' => 'replace',
+						'value'  => 'Jane Doe'
+					],
+				],
+			],
+		];
+		$config   = json_decode( json_encode( $_config ) );
+		$scrubber = new TestScrubber( $config, false );
+
+		$wpdb = Mockery::mock('WPDB');
+		$wpdb->users = 'wp_users';
+
+		$wpdb->shouldReceive( 'get_col' )
+			->once()
+			->andReturns( [ 123 ] );
+
+		$progress = Mockery::mock( 'WP_CLI\Utils\ProgressBar' );
+
+		$progress->shouldReceive( 'tick' )
+			->once();
+		$progress->shouldReceive( 'finish' )
+			->once();
+
+		WP_Mock::userFunction( 'WP_CLI\Utils\make_progress_bar' )
+			->once()
+			->andReturns( $progress );
+
+		$result = $scrubber->scrub_users();
+
+		$this->assertNull( $result );
 		$this->assertConditionsMet();
 	}
 }
