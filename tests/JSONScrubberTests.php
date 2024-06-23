@@ -438,18 +438,19 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertNull( $result );
 	}
 
+	/**
+	 * Test case for the `scrub_users` method.
+	 * Tests results for main user scrubbing method.
+	 *
+	 * Uses TestScrubber class to override the scrub_object_by_type method
+	 * this allows us to test the main scrubbing method in isolation.
+	 */
 	public function test_scrub_users() {
 		global $wpdb;
 
 		$_config  = [
 			'user_data' => [
-				'fields' => [
-					[
-						'name'   => 'display_name',
-						'action' => 'replace',
-						'value'  => 'Jane Doe'
-					],
-				],
+				'fields' => [],
 			],
 		];
 		$config   = json_decode( json_encode( $_config ) );
