@@ -305,6 +305,48 @@ final class JSONScrubberTests extends TestCase {
 
 	/**
 	 * Test case for the `scrub_object_by_type` method.
+	 * Tests the `post` type.
+	 */
+	public function test_scrub_object_by_type_post() {
+		global $wpdb;
+
+		$scrubber = new JSONScrubber( new stdClass(), false );
+		$method   = $this->getInaccessibleMethod( $scrubber, 'scrub_object_by_type' );
+		$_config  = [
+			'fields' => [
+				[
+					'name'   => 'post_title',
+					'action' => 'replace',
+					'value'  => 'Lorem Ipsum'
+				]
+			],
+		];
+
+		$wpdb = Mockery::mock('WPDB');
+		$wpdb->posts = 'wp_posts';
+
+		WP_Mock::userFunction('is_wp_error')
+			->once()
+			->andReturn( false );
+
+		$wpdb->allows( 'update' )
+			->once()
+			->with(
+				'wp_posts',
+				[ 'post_title' => 'Lorem Ipsum' ],
+				[ 'ID' => 123 ]
+			);
+
+
+		$config = json_decode( json_encode( $_config ) );
+		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'post' ] );
+
+		$this->assertTrue( $result );
+		$this->assertConditionsMet();
+	}
+
+	/**
+	 * Test case for the `scrub_object_by_type` method.
 	 * Tests the `term` type.
 	 */
 	public function test_scrub_object_by_type_term() {
