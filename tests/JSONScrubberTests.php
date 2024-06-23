@@ -127,7 +127,7 @@ final class JSONScrubberTests extends TestCase {
 			->once()
 			->andReturn( false );
 
-		$wpdb->allows( 'update' )
+		$wpdb->shouldReceive( 'update' )
 			->once()
 			->with(
 				'wp_usermeta',
@@ -168,7 +168,7 @@ final class JSONScrubberTests extends TestCase {
 			->once()
 			->andReturn( false );
 
-		$wpdb->allows( 'update' )
+		$wpdb->shouldReceive( 'update' )
 			->once()
 			->with(
 				'wp_termmeta',
@@ -209,7 +209,7 @@ final class JSONScrubberTests extends TestCase {
 			->once()
 			->andReturn( false );
 
-		$wpdb->allows( 'update' )
+		$wpdb->shouldReceive( 'update' )
 			->once()
 			->with(
 				'wp_postmeta',
@@ -245,7 +245,7 @@ final class JSONScrubberTests extends TestCase {
 		$wpdb = Mockery::mock('WPDB');
 		$wpdb->termmeta = 'wp_termmeta';
 
-		$wpdb->allows( 'delete' )
+		$wpdb->shouldReceive( 'delete' )
 			->once()
 			->with(
 				'wp_termmeta',
@@ -289,7 +289,7 @@ final class JSONScrubberTests extends TestCase {
 			->once()
 			->andReturn( false );
 
-		$wpdb->allows( 'update' )
+		$wpdb->shouldReceive( 'update' )
 			->once()
 			->with(
 				'wp_users',
@@ -340,7 +340,7 @@ final class JSONScrubberTests extends TestCase {
 			->once()
 			->andReturn( false );
 
-		$wpdb->allows( 'update' )
+		$wpdb->shouldReceive( 'update' )
 			->once()
 			->with(
 				'wp_posts',
@@ -348,7 +348,7 @@ final class JSONScrubberTests extends TestCase {
 				[ 'ID' => 123 ]
 			);
 
-		$wpdb->allows( 'update' )
+		$wpdb->shouldReceive( 'update' )
 			->once()
 			->with(
 				'wp_postmeta',
@@ -400,7 +400,7 @@ final class JSONScrubberTests extends TestCase {
 			->twice()
 			->andReturn( false );
 
-		$wpdb->allows( 'update' )
+		$wpdb->shouldReceive( 'update' )
 			->once()
 			->with(
 				'wp_term_taxonomy',
@@ -411,7 +411,7 @@ final class JSONScrubberTests extends TestCase {
 				],
 			);
 
-		$wpdb->allows( 'update' )
+		$wpdb->shouldReceive( 'update' )
 			->once()
 			->with(
 				'wp_terms',
