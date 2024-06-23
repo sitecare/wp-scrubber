@@ -317,15 +317,24 @@ final class JSONScrubberTests extends TestCase {
 				[
 					'name'   => 'post_title',
 					'action' => 'replace',
-					'value'  => 'Lorem Ipsum'
+					'value'  => 'Lorem Ipsum',
+				]
+			],
+			'meta_fields' => [
+				[
+					'name'   => 'meta_field',
+					'action' => 'replace',
+					'value'  => 'foobar',
 				]
 			],
 		];
 
 		$wpdb = Mockery::mock('WPDB');
 		$wpdb->posts = 'wp_posts';
+		$wpdb->postmeta = 'wp_postmeta';
 
 		WP_Mock::userFunction('is_wp_error')
+			->atLeast()
 			->once()
 			->andReturn( false );
 
@@ -335,6 +344,17 @@ final class JSONScrubberTests extends TestCase {
 				'wp_posts',
 				[ 'post_title' => 'Lorem Ipsum' ],
 				[ 'ID' => 123 ]
+			);
+
+		$wpdb->allows( 'update' )
+			->once()
+			->with(
+				'wp_postmeta',
+				[ 'meta_value' => 'foobar' ],
+				[
+					'post_id'  => 123,
+					'meta_key' => 'meta_field',
+				]
 			);
 
 
