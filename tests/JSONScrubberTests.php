@@ -358,9 +358,14 @@ final class JSONScrubberTests extends TestCase {
 			'name'   => 'text_tax',
 			'fields' => [
 				[
+					'name'   => 'slug',
+					'action' => 'replace',
+					'value'  => 'foobar',
+				],
+				[
 					'name'   => 'description',
 					'action' => 'replace',
-					'value'  => 'Lorem Ipsum'
+					'value'  => 'Lorem Ipsum',
 				]
 			],
 		];
@@ -370,7 +375,7 @@ final class JSONScrubberTests extends TestCase {
 		$wpdb->term_taxonomy = 'wp_term_taxonomy';
 
 		WP_Mock::userFunction('is_wp_error')
-			->once()
+			->twice()
 			->andReturn( false );
 
 		$wpdb->allows( 'update' )
@@ -382,6 +387,14 @@ final class JSONScrubberTests extends TestCase {
 					'term_id' => 123,
 					'taxonomy' => 'text_tax'
 				],
+			);
+
+		$wpdb->allows( 'update' )
+			->once()
+			->with(
+				'wp_terms',
+				[ 'slug' => 'foobar' ],
+				[ 'term_id' => 123 ],
 			);
 
 
