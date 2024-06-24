@@ -73,16 +73,7 @@ final class JSONScrubberTests extends TestCase {
 			->once()
 			->andReturns( [ 123, 124 ] );
 
-		$progress = Mockery::mock( 'WP_CLI\Utils\ProgressBar' );
-
-		$progress->shouldReceive( 'tick' )
-			->twice();
-		$progress->shouldReceive( 'finish' )
-			->once();
-
-		WP_Mock::userFunction( 'WP_CLI\Utils\make_progress_bar' )
-			->once()
-			->andReturns( $progress );
+		$this->assert_progress( 2 );
 
 		$result = $scrubber->scrub_users();
 
@@ -122,16 +113,8 @@ final class JSONScrubberTests extends TestCase {
 			->twice()
 			->andReturns( [ 123, 124 ] );
 
-		$progress = Mockery::mock( 'WP_CLI\Utils\ProgressBar' );
-
-		$progress->shouldReceive( 'tick' )
-			->times( 4 );
-		$progress->shouldReceive( 'finish' )
-			->twice();
-
-		WP_Mock::userFunction( 'WP_CLI\Utils\make_progress_bar' )
-			->twice()
-			->andReturns( $progress );
+		$this->assert_progress( 2 );
+		$this->assert_progress( 2 );
 
 		WP_Mock::userFunction( 'esc_sql' )
 			->twice();
@@ -174,16 +157,7 @@ final class JSONScrubberTests extends TestCase {
 			->once()
 			->andReturns( [ 123, 124 ] );
 
-		$progress = Mockery::mock( 'WP_CLI\Utils\ProgressBar' );
-
-		$progress->shouldReceive( 'tick' )
-			->twice();
-		$progress->shouldReceive( 'finish' )
-			->once();
-
-		WP_Mock::userFunction( 'WP_CLI\Utils\make_progress_bar' )
-			->once()
-			->andReturns( $progress );
+		$this->assert_progress( 2 );
 
 		$result = $scrubber->scrub_taxonomies();
 
@@ -222,21 +196,26 @@ final class JSONScrubberTests extends TestCase {
 				[ 'option_name' => 'test_option' ]
 			);
 
-		$progress = Mockery::mock( 'WP_CLI\Utils\ProgressBar' );
-
-		$progress->shouldReceive( 'tick' )
-			->once();
-		$progress->shouldReceive( 'finish' )
-			->once();
-
-		WP_Mock::userFunction( 'WP_CLI\Utils\make_progress_bar' )
-			->once()
-			->andReturns( $progress );
+		$this->assert_progress();
 
 		$result = $scrubber->scrub_options();
 
 		$this->assertNull( $result );
 		$this->assertConditionsMet();
+	}
+
+	private function assert_progress( $count = 1 ) {
+		$progress = Mockery::mock( 'WP_CLI\Utils\ProgressBar' );
+
+		$progress->shouldReceive( 'tick' )
+			->times( $count );
+
+		$progress->shouldReceive( 'finish' )
+			->once();
+
+		WP_Mock::userFunction( 'WP_CLI\Utils\make_progress_bar' )
+		->once()
+		->andReturns( $progress );
 	}
 
 }
