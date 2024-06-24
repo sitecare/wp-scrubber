@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit cacheResult="false" bootstrap="./bootstrap.php">
+	<testsuites>
+		<testsuite name="Test Suite">
+			<file>tests/JSONScrubberInternalTests.php</file>
+			<file>tests/JSONScrubberTests.php</file>
+		</testsuite>
+	</testsuites>
+</phpunit>

@@ -4,7 +4,7 @@ use WP_Mock\Tools\TestCase;
 use TenUpWPScrubber\JSONScrubber;
 
 /**
- * Class JSONScrubberTests
+ * Class JSONScrubberInternalTests
  *
  * This class contains unit tests for the JSONScrubber class.
  */
