@@ -461,12 +461,12 @@ final class JSONScrubberTests extends TestCase {
 
 		$wpdb->shouldReceive( 'get_col' )
 			->once()
-			->andReturns( [ 123 ] );
+			->andReturns( [ 123, 124 ] );
 
 		$progress = Mockery::mock( 'WP_CLI\Utils\ProgressBar' );
 
 		$progress->shouldReceive( 'tick' )
-			->once();
+			->twice();
 		$progress->shouldReceive( 'finish' )
 			->once();
 
