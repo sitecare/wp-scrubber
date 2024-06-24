@@ -204,7 +204,10 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertConditionsMet();
 	}
 
-	private function assert_progress( $count = 1 ) {
+	/**
+	 * Helper method for progress assertions to reduce code.
+	 */
+	private function assert_progress( $count = 1 ): void {
 		$progress = Mockery::mock( 'WP_CLI\Utils\ProgressBar' );
 
 		$progress->shouldReceive( 'tick' )
