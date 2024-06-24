@@ -141,4 +141,47 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertNull( $result );
 		$this->assertConditionsMet();
 	}
+
+	public function test_scrub_taxonomies() {
+		global $wpdb;
+
+		$_config  = [
+			'taxonomies' => [
+				[
+					'name' => 'test_tax',
+					'fields' => [],
+				]
+			],
+		];
+		$config   = json_decode( json_encode( $_config ) );
+		$scrubber = new TestScrubber( $config, false );
+
+		$wpdb = Mockery::mock('WPDB');
+		$wpdb->term_taxonomy = 'wp_term_taxonomy';
+
+		$wpdb->shouldReceive( 'prepare' )
+			->once()
+			->andReturns( 'SELECT term_id FROM wp_term_taxonomy WHERE taxonomy = \'test_tax\'' );
+
+		$wpdb->shouldReceive( 'get_col' )
+			->once()
+			->andReturns( [ 123, 124 ] );
+
+		$progress = Mockery::mock( 'WP_CLI\Utils\ProgressBar' );
+
+		$progress->shouldReceive( 'tick' )
+			->twice();
+		$progress->shouldReceive( 'finish' )
+			->once();
+
+		WP_Mock::userFunction( 'WP_CLI\Utils\make_progress_bar' )
+			->once()
+			->andReturns( $progress );
+
+		$result = $scrubber->scrub_taxonomies();
+
+		$this->assertNull( $result );
+		$this->assertConditionsMet();
+	}
+
 }
