@@ -20,7 +20,7 @@ final class JSONScrubberInternalTests extends TestCase {
 		$_field   = [
 			'name'   => 'display_name',
 			'action' => 'replace',
-			'value'  => 'Jane Doe'
+			'value'  => 'Jane Doe',
 		];
 
 		$field  = json_decode( json_encode( $_field ) );
@@ -57,7 +57,7 @@ final class JSONScrubberInternalTests extends TestCase {
 		$_field   = [
 			'name'       => 'display_name',
 			'action'     => 'faker',
-			'faker_type' => 'randomDigit'
+			'faker_type' => 'randomDigit',
 		];
 
 		$field  = json_decode( json_encode( $_field ) );
@@ -76,7 +76,7 @@ final class JSONScrubberInternalTests extends TestCase {
 		$_field   = [
 			'name'       => 'display_name',
 			'action'     => 'faker',
-			'faker_type' => 'thisIsNotAValidFakerType'
+			'faker_type' => 'thisIsNotAValidFakerType',
 		];
 
 		Mockery::mock( '\WP_Error' );
@@ -99,13 +99,13 @@ final class JSONScrubberInternalTests extends TestCase {
 		$_config  = [
 			'name'   => 'meta_field',
 			'action' => 'replace',
-			'value'  => 'foobar'
+			'value'  => 'foobar',
 		];
 
-		$wpdb = Mockery::mock('WPDB');
+		$wpdb           = Mockery::mock( 'WPDB' );
 		$wpdb->usermeta = 'wp_usermeta';
 
-		WP_Mock::userFunction('is_wp_error')
+		WP_Mock::userFunction( 'is_wp_error' )
 			->once()
 			->andReturn( false );
 
@@ -116,7 +116,7 @@ final class JSONScrubberInternalTests extends TestCase {
 				[ 'meta_value' => 'foobar' ],
 				[
 					'user_id'  => 123,
-					'meta_key' => 'meta_field'
+					'meta_key' => 'meta_field',
 				]
 			)
 			->andReturn( true );
@@ -140,13 +140,13 @@ final class JSONScrubberInternalTests extends TestCase {
 		$_config  = [
 			'name'   => 'meta_field',
 			'action' => 'replace',
-			'value'  => 'foobar'
+			'value'  => 'foobar',
 		];
 
-		$wpdb = Mockery::mock('WPDB');
+		$wpdb           = Mockery::mock( 'WPDB' );
 		$wpdb->termmeta = 'wp_termmeta';
 
-		WP_Mock::userFunction('is_wp_error')
+		WP_Mock::userFunction( 'is_wp_error' )
 			->once()
 			->andReturn( false );
 
@@ -157,7 +157,7 @@ final class JSONScrubberInternalTests extends TestCase {
 				[ 'meta_value' => 'foobar' ],
 				[
 					'term_id'  => 123,
-					'meta_key' => 'meta_field'
+					'meta_key' => 'meta_field',
 				]
 			)
 			->andReturn( true );
@@ -181,13 +181,13 @@ final class JSONScrubberInternalTests extends TestCase {
 		$_config  = [
 			'name'   => 'meta_field',
 			'action' => 'replace',
-			'value'  => 'foobar'
+			'value'  => 'foobar',
 		];
 
-		$wpdb = Mockery::mock('WPDB');
+		$wpdb           = Mockery::mock( 'WPDB' );
 		$wpdb->postmeta = 'wp_postmeta';
 
-		WP_Mock::userFunction('is_wp_error')
+		WP_Mock::userFunction( 'is_wp_error' )
 			->once()
 			->andReturn( false );
 
@@ -198,7 +198,7 @@ final class JSONScrubberInternalTests extends TestCase {
 				[ 'meta_value' => 'foobar' ],
 				[
 					'post_id'  => 123,
-					'meta_key' => 'meta_field'
+					'meta_key' => 'meta_field',
 				]
 			)
 			->andReturn( true );
@@ -224,7 +224,7 @@ final class JSONScrubberInternalTests extends TestCase {
 			'action' => 'remove',
 		];
 
-		$wpdb = Mockery::mock('WPDB');
+		$wpdb           = Mockery::mock( 'WPDB' );
 		$wpdb->termmeta = 'wp_termmeta';
 
 		$wpdb->shouldReceive( 'delete' )
@@ -232,7 +232,7 @@ final class JSONScrubberInternalTests extends TestCase {
 			->with(
 				'wp_termmeta',
 				[
-					'term_id' => 123,
+					'term_id'  => 123,
 					'meta_key' => 'meta_field',
 				]
 			)
@@ -259,15 +259,15 @@ final class JSONScrubberInternalTests extends TestCase {
 				[
 					'name'   => 'display_name',
 					'action' => 'replace',
-					'value'  => 'Jane Doe'
-				]
+					'value'  => 'Jane Doe',
+				],
 			],
 		];
 
-		$wpdb = Mockery::mock('WPDB');
+		$wpdb        = Mockery::mock( 'WPDB' );
 		$wpdb->users = 'wp_users';
 
-		WP_Mock::userFunction('is_wp_error')
+		WP_Mock::userFunction( 'is_wp_error' )
 			->once()
 			->andReturn( false );
 
@@ -278,7 +278,6 @@ final class JSONScrubberInternalTests extends TestCase {
 				[ 'display_name' => 'Jane Doe' ],
 				[ 'ID' => 123 ]
 			);
-
 
 		$config = json_decode( json_encode( $_config ) );
 		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'user' ] );
@@ -297,27 +296,27 @@ final class JSONScrubberInternalTests extends TestCase {
 		$scrubber = new JSONScrubber( new stdClass(), false );
 		$method   = $this->getInaccessibleMethod( $scrubber, 'scrub_object_by_type' );
 		$_config  = [
-			'fields' => [
+			'fields'      => [
 				[
 					'name'   => 'post_title',
 					'action' => 'replace',
 					'value'  => 'Lorem Ipsum',
-				]
+				],
 			],
 			'meta_fields' => [
 				[
 					'name'   => 'meta_field',
 					'action' => 'replace',
 					'value'  => 'foobar',
-				]
+				],
 			],
 		];
 
-		$wpdb = Mockery::mock('WPDB');
-		$wpdb->posts = 'wp_posts';
+		$wpdb           = Mockery::mock( 'WPDB' );
+		$wpdb->posts    = 'wp_posts';
 		$wpdb->postmeta = 'wp_postmeta';
 
-		WP_Mock::userFunction('is_wp_error')
+		WP_Mock::userFunction( 'is_wp_error' )
 			->atLeast()
 			->once()
 			->andReturn( false );
@@ -340,7 +339,6 @@ final class JSONScrubberInternalTests extends TestCase {
 					'meta_key' => 'meta_field',
 				]
 			);
-
 
 		$config = json_decode( json_encode( $_config ) );
 		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'post' ] );
@@ -370,15 +368,15 @@ final class JSONScrubberInternalTests extends TestCase {
 					'name'   => 'description',
 					'action' => 'replace',
 					'value'  => 'Lorem Ipsum',
-				]
+				],
 			],
 		];
 
-		$wpdb = Mockery::mock('WPDB');
-		$wpdb->terms = 'wp_terms';
+		$wpdb                = Mockery::mock( 'WPDB' );
+		$wpdb->terms         = 'wp_terms';
 		$wpdb->term_taxonomy = 'wp_term_taxonomy';
 
-		WP_Mock::userFunction('is_wp_error')
+		WP_Mock::userFunction( 'is_wp_error' )
 			->twice()
 			->andReturn( false );
 
@@ -388,8 +386,8 @@ final class JSONScrubberInternalTests extends TestCase {
 				'wp_term_taxonomy',
 				[ 'description' => 'Lorem Ipsum' ],
 				[
-					'term_id' => 123,
-					'taxonomy' => 'text_tax'
+					'term_id'  => 123,
+					'taxonomy' => 'text_tax',
 				],
 			);
 
@@ -400,7 +398,6 @@ final class JSONScrubberInternalTests extends TestCase {
 				[ 'slug' => 'foobar' ],
 				[ 'term_id' => 123 ],
 			);
-
 
 		$config = json_decode( json_encode( $_config ) );
 		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'term' ] );

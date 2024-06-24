@@ -1,6 +1,6 @@
 <?php
 
-use \TenUpWPScrubber\JSONScrubber;
+use TenUpWPScrubber\JSONScrubber;
 
 class TestScrubber extends JSONScrubber {
 
@@ -14,5 +14,4 @@ class TestScrubber extends JSONScrubber {
 	protected function scrub_object_by_type( int $object_id, object $object_config, string $object_type ): bool|\WP_Error {
 		return true;
 	}
-
 }

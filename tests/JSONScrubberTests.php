@@ -16,7 +16,7 @@ final class JSONScrubberTests extends TestCase {
 	 * Test the instance creation of JSONScrubber.
 	 */
 	public function test_instance() {
-		$config = new stdClass();
+		$config      = new stdClass();
 		$config->foo = 'bar';
 
 		$instance    = new JSONScrubber( $config, false );
@@ -66,7 +66,7 @@ final class JSONScrubberTests extends TestCase {
 		$config   = json_decode( json_encode( $_config ) );
 		$scrubber = new TestScrubber( $config, false );
 
-		$wpdb = Mockery::mock('WPDB');
+		$wpdb        = Mockery::mock( 'WPDB' );
 		$wpdb->users = 'wp_users';
 
 		$wpdb->shouldReceive( 'get_col' )
@@ -94,15 +94,15 @@ final class JSONScrubberTests extends TestCase {
 		$_config  = [
 			'post_types' => [
 				[
-					'name' => 'test_cpt',
+					'name'   => 'test_cpt',
 					'fields' => [],
-				]
+				],
 			],
 		];
 		$config   = json_decode( json_encode( $_config ) );
 		$scrubber = new TestScrubber( $config, false );
 
-		$wpdb = Mockery::mock('WPDB');
+		$wpdb        = Mockery::mock( 'WPDB' );
 		$wpdb->posts = 'wp_posts';
 
 		$wpdb->shouldReceive( 'prepare' )
@@ -138,15 +138,15 @@ final class JSONScrubberTests extends TestCase {
 		$_config  = [
 			'taxonomies' => [
 				[
-					'name' => 'test_tax',
+					'name'   => 'test_tax',
 					'fields' => [],
-				]
+				],
 			],
 		];
 		$config   = json_decode( json_encode( $_config ) );
 		$scrubber = new TestScrubber( $config, false );
 
-		$wpdb = Mockery::mock('WPDB');
+		$wpdb                = Mockery::mock( 'WPDB' );
 		$wpdb->term_taxonomy = 'wp_term_taxonomy';
 
 		$wpdb->shouldReceive( 'prepare' )
@@ -180,13 +180,13 @@ final class JSONScrubberTests extends TestCase {
 				[
 					'name'   => 'test_option',
 					'action' => 'remove',
-				]
+				],
 			],
 		];
 		$config   = json_decode( json_encode( $_config ) );
 		$scrubber = new TestScrubber( $config, false );
 
-		$wpdb = Mockery::mock('WPDB');
+		$wpdb          = Mockery::mock( 'WPDB' );
 		$wpdb->options = 'wp_options';
 
 		$wpdb->shouldReceive( 'delete' )
@@ -220,13 +220,13 @@ final class JSONScrubberTests extends TestCase {
 					'name'   => 'test_option',
 					'action' => 'replace',
 					'value'  => 'new_value',
-				]
+				],
 			],
 		];
 		$config   = json_decode( json_encode( $_config ) );
 		$scrubber = new TestScrubber( $config, false );
 
-		$wpdb = Mockery::mock('WPDB');
+		$wpdb          = Mockery::mock( 'WPDB' );
 		$wpdb->options = 'wp_options';
 
 		$wpdb->shouldReceive( 'update' )
@@ -261,13 +261,13 @@ final class JSONScrubberTests extends TestCase {
 					'name'        => 'custom_table_name',
 					'primary_key' => 'id',
 					'columns'     => [],
-				]
+				],
 			],
 		];
 		$config   = json_decode( json_encode( $_config ) );
 		$scrubber = new TestScrubber( $config, false );
 
-		$wpdb = Mockery::mock('WPDB');
+		$wpdb = Mockery::mock( 'WPDB' );
 
 		$wpdb->shouldReceive( 'get_col' )
 			->once()
@@ -310,7 +310,7 @@ final class JSONScrubberTests extends TestCase {
 		$config   = json_decode( json_encode( $_config ) );
 		$scrubber = new TestScrubber( $config, false );
 
-		$wpdb = Mockery::mock('WPDB');
+		$wpdb = Mockery::mock( 'WPDB' );
 
 		$wpdb->shouldReceive( 'query' )
 			->once()
@@ -346,5 +346,4 @@ final class JSONScrubberTests extends TestCase {
 		->once()
 		->andReturns( $progress );
 	}
-
 }

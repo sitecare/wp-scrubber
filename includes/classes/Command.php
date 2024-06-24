@@ -174,7 +174,6 @@ class Command extends WP_CLI_Command {
 	 * @param array $args       Positional arguments passed to the command.
 	 * @param array $assoc_args Associative arguments passed to the command.
 	 * @return void
-	 *
 	 */
 	protected function from_config( $args, $assoc_args ) {
 		global $wpdb;
