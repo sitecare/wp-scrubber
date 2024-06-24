@@ -142,6 +142,13 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertConditionsMet();
 	}
 
+	/**
+	 * Test case for the `scrub_taxonomies` method.
+	 * Tests results for main taxonomy scrubbing method.
+	 *
+	 * Uses TestScrubber class to override the scrub_object_by_type method
+	 * this allows us to test the main scrubbing method in isolation.
+	 */
 	public function test_scrub_taxonomies() {
 		global $wpdb;
 
@@ -179,6 +186,54 @@ final class JSONScrubberTests extends TestCase {
 			->andReturns( $progress );
 
 		$result = $scrubber->scrub_taxonomies();
+
+		$this->assertNull( $result );
+		$this->assertConditionsMet();
+	}
+
+	/**
+	 * Test case for the `scrub_options` method.
+	 * Tests results for main options scrubbing method.
+	 *
+	 * Uses TestScrubber class to override the scrub_object_by_type method
+	 * this allows us to test the main scrubbing method in isolation.
+	 */
+	public function test_scrub_options_remove() {
+		global $wpdb;
+
+		$_config  = [
+			'options' => [
+				[
+					'name'   => 'test_option',
+					'action' => 'remove',
+				]
+			],
+		];
+		$config   = json_decode( json_encode( $_config ) );
+		$scrubber = new TestScrubber( $config, false );
+
+		$wpdb = Mockery::mock('WPDB');
+		$wpdb->options = 'wp_options';
+
+		$wpdb->shouldReceive( 'delete' )
+			->once()
+			->with(
+				'wp_options',
+				[ 'option_name' => 'test_option' ]
+			);
+
+		$progress = Mockery::mock( 'WP_CLI\Utils\ProgressBar' );
+
+		$progress->shouldReceive( 'tick' )
+			->once();
+		$progress->shouldReceive( 'finish' )
+			->once();
+
+		WP_Mock::userFunction( 'WP_CLI\Utils\make_progress_bar' )
+			->once()
+			->andReturns( $progress );
+
+		$result = $scrubber->scrub_options();
 
 		$this->assertNull( $result );
 		$this->assertConditionsMet();
