@@ -166,7 +166,7 @@ final class JSONScrubberTests extends TestCase {
 	}
 
 	/**
-	 * Test case for the `scrub_options` method.
+	 * Test case for the `scrub_options` method with removals.
 	 * Tests results for main options scrubbing method.
 	 *
 	 * Uses TestScrubber class to override the scrub_object_by_type method
@@ -193,6 +193,47 @@ final class JSONScrubberTests extends TestCase {
 			->once()
 			->with(
 				'wp_options',
+				[ 'option_name' => 'test_option' ]
+			);
+
+		$this->assert_progress();
+
+		$result = $scrubber->scrub_options();
+
+		$this->assertNull( $result );
+		$this->assertConditionsMet();
+	}
+
+	/**
+	 * Test case for the `scrub_options` method with updates.
+	 * Tests results for main options scrubbing method.
+	 *
+	 * Uses TestScrubber class to override the scrub_object_by_type method
+	 * this allows us to test the main scrubbing method in isolation.
+	 */
+	public function test_scrub_options_update() {
+		global $wpdb;
+
+		$_config  = [
+			'options' => [
+				[
+					'name'   => 'test_option',
+					'action' => 'replace',
+					'value'  => 'new_value',
+				]
+			],
+		];
+		$config   = json_decode( json_encode( $_config ) );
+		$scrubber = new TestScrubber( $config, false );
+
+		$wpdb = Mockery::mock('WPDB');
+		$wpdb->options = 'wp_options';
+
+		$wpdb->shouldReceive( 'update' )
+			->once()
+			->with(
+				'wp_options',
+				[ 'option_value' => 'new_value' ],
 				[ 'option_name' => 'test_option' ]
 			);
 
