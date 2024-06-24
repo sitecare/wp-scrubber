@@ -481,6 +481,10 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertConditionsMet();
 	}
 
+	/**
+	 * Test case for the `scrub_post_types` method.
+	 * Tests results for empty config.
+	 */
 	public function test_scrub_post_types_no_config() {
 		$scrubber = new JSONScrubber( new stdClass(), false );
 		$result   = $scrubber->scrub_post_types();
@@ -488,6 +492,13 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertNull( $result );
 	}
 
+	/**
+	 * Test case for the `scrub_post_types` method.
+	 * Tests results for main post type scrubbing method.
+	 *
+	 * Uses TestScrubber class to override the scrub_object_by_type method
+	 * this allows us to test the main scrubbing method in isolation.
+	 */
 	public function test_scrub_post_types() {
 		global $wpdb;
 
