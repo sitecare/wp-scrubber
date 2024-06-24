@@ -11,22 +11,6 @@ use TenUpWPScrubber\JSONScrubber;
 final class JSONScrubberInternalTests extends TestCase {
 
 	/**
-	 * Test the instance creation of JSONScrubber.
-	 */
-	public function test_instance() {
-		$config = new stdClass();
-		$config->foo = 'bar';
-
-		$instance    = new JSONScrubber( $config, false );
-		$config_prop = $this->getInaccessibleProperty( $instance, 'config' )->getValue( $instance );
-		$show_errors = $this->getInaccessibleProperty( $instance, 'show_errors' )->getValue( $instance );
-
-		$this->assertEquals( $config->foo, $config_prop->foo );
-		$this->assertFalse( $show_errors );
-	}
-
-
-	/**
 	 * Test case for the `get_field_data_by_action` method.
 	 * Tests the `replace` action.
 	 */

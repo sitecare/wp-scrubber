@@ -13,14 +13,39 @@ use TenUpWPScrubber\JSONScrubber;
 final class JSONScrubberTests extends TestCase {
 
 	/**
-	 * Test case for the `scrub_users` method.
-	 * Tests results for empty config.
+	 * Test the instance creation of JSONScrubber.
 	 */
-	public function test_scrub_users_no_config() {
-		$scrubber = new JSONScrubber( new stdClass(), false );
-		$result   = $scrubber->scrub_users();
+	public function test_instance() {
+		$config = new stdClass();
+		$config->foo = 'bar';
 
-		$this->assertNull( $result );
+		$instance    = new JSONScrubber( $config, false );
+		$config_prop = $this->getInaccessibleProperty( $instance, 'config' )->getValue( $instance );
+		$show_errors = $this->getInaccessibleProperty( $instance, 'show_errors' )->getValue( $instance );
+
+		$this->assertEquals( $config->foo, $config_prop->foo );
+		$this->assertFalse( $show_errors );
+	}
+
+	/**
+	 * Tests case for all scrub methods with empty config.
+	 */
+	public function test_scrub_no_config() {
+		$scrubber = new JSONScrubber( new stdClass(), false );
+
+		$user_scrub     = $scrubber->scrub_users();
+		$post_scrub     = $scrubber->scrub_post_types();
+		$tax_scrub      = $scrubber->scrub_taxonomies();
+		$options_scrub  = $scrubber->scrub_options();
+		$custom_scrub   = $scrubber->scrub_custom_tables();
+		$truncate_scrub = $scrubber->truncate_tables();
+
+		$this->assertNull( $user_scrub );
+		$this->assertNull( $post_scrub );
+		$this->assertNull( $tax_scrub );
+		$this->assertNull( $options_scrub );
+		$this->assertNull( $custom_scrub );
+		$this->assertNull( $truncate_scrub );
 	}
 
 	/**
@@ -63,17 +88,6 @@ final class JSONScrubberTests extends TestCase {
 
 		$this->assertNull( $result );
 		$this->assertConditionsMet();
-	}
-
-	/**
-	 * Test case for the `scrub_post_types` method.
-	 * Tests results for empty config.
-	 */
-	public function test_scrub_post_types_no_config() {
-		$scrubber = new JSONScrubber( new stdClass(), false );
-		$result   = $scrubber->scrub_post_types();
-
-		$this->assertNull( $result );
 	}
 
 	/**
