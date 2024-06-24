@@ -245,6 +245,13 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertConditionsMet();
 	}
 
+	/**
+	 * Test case for the `scrub_custom_tables` method.
+	 * Tests results for main custom table scrubbing method.
+	 *
+	 * Uses TestScrubber class to override the scrub_object_by_type method
+	 * this allows us to test the main scrubbing method in isolation.
+	 */
 	public function test_scrub_custom_tables() {
 		global $wpdb;
 
@@ -286,6 +293,38 @@ final class JSONScrubberTests extends TestCase {
 		$this->assert_progress( 2 );
 
 		$result = $scrubber->scrub_custom_tables();
+
+		$this->assertNull( $result );
+		$this->assertConditionsMet();
+	}
+
+	public function test_truncate_tables() {
+		global $wpdb;
+
+		$_config  = [
+			'truncate_tables' => [
+				'custom_table_one',
+				'custom_table_two',
+			],
+		];
+		$config   = json_decode( json_encode( $_config ) );
+		$scrubber = new TestScrubber( $config, false );
+
+		$wpdb = Mockery::mock('WPDB');
+
+		$wpdb->shouldReceive( 'query' )
+			->once()
+			->with( 'TRUNCATE TABLE custom_table_one' )
+			->andReturn( true );
+
+			$wpdb->shouldReceive( 'query' )
+			->once()
+			->with( 'TRUNCATE TABLE custom_table_two' )
+			->andReturn( true );
+
+		$this->assert_progress( 2 );
+
+		$result = $scrubber->truncate_tables();
 
 		$this->assertNull( $result );
 		$this->assertConditionsMet();
