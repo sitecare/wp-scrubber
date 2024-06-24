@@ -4,6 +4,7 @@ require_once __DIR__ . '/classes/TestScrubber.php';
 
 use WP_Mock\Tools\TestCase;
 use TenUpWPScrubber\JSONScrubber;
+use function Patchwork\redefine;
 
 /**
  * Class JSONScrubberTests
@@ -475,6 +476,58 @@ final class JSONScrubberTests extends TestCase {
 			->andReturns( $progress );
 
 		$result = $scrubber->scrub_users();
+
+		$this->assertNull( $result );
+		$this->assertConditionsMet();
+	}
+
+	public function test_scrub_post_types_no_config() {
+		$scrubber = new JSONScrubber( new stdClass(), false );
+		$result   = $scrubber->scrub_post_types();
+
+		$this->assertNull( $result );
+	}
+
+	public function test_scrub_post_types() {
+		global $wpdb;
+
+		$_config  = [
+			'post_types' => [
+				[
+					'name' => 'test_cpt',
+					'fields' => [],
+				]
+			],
+		];
+		$config   = json_decode( json_encode( $_config ) );
+		$scrubber = new TestScrubber( $config, false );
+
+		$wpdb = Mockery::mock('WPDB');
+		$wpdb->posts = 'wp_posts';
+
+		$wpdb->shouldReceive( 'prepare' )
+			->once()
+			->andReturns( 'SELECT ID FROM wp_posts WHERE post_type = \'test_cpt\'' );
+
+		$wpdb->shouldReceive( 'get_col' )
+			->twice()
+			->andReturns( [ 123, 124 ] );
+
+		$progress = Mockery::mock( 'WP_CLI\Utils\ProgressBar' );
+
+		$progress->shouldReceive( 'tick' )
+			->times( 4 );
+		$progress->shouldReceive( 'finish' )
+			->twice();
+
+		WP_Mock::userFunction( 'WP_CLI\Utils\make_progress_bar' )
+			->twice()
+			->andReturns( $progress );
+
+		WP_Mock::userFunction( 'esc_sql' )
+			->twice();
+
+		$result = $scrubber->scrub_post_types();
 
 		$this->assertNull( $result );
 		$this->assertConditionsMet();
