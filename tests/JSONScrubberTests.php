@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class file for JSONScrubberTests class.
+ *
+ * @package TenUpWPScrubber
+ */
 
 require_once __DIR__ . '/classes/TestScrubber.php';
 
@@ -298,6 +303,10 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertConditionsMet();
 	}
 
+	/**
+	 * Test case for the `truncate_tables` method.
+	 * Tests results for main table truncation method.
+	 */
 	public function test_truncate_tables() {
 		global $wpdb;
 
@@ -332,6 +341,10 @@ final class JSONScrubberTests extends TestCase {
 
 	/**
 	 * Helper method for progress assertions to reduce code.
+	 * This method will assert the progress bar is created and ticked.
+	 *
+	 * @param int $count Number of times to tick the progress bar.
+	 * @return void
 	 */
 	private function assert_progress( $count = 1 ): void {
 		$progress = Mockery::mock( 'WP_CLI\Utils\ProgressBar' );

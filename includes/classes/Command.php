@@ -22,7 +22,7 @@ class Command extends WP_CLI_Command {
 	 * @param array $modes      Areas to scrub
 	 * @param array $args       Positional arguments passed to the command.
 	 * @param array $assoc_args Associative arguments passed to the command.
-	 * @return void
+	 * @return mixed
 	 */
 	protected function scrub( $modes, $args, $assoc_args ) {
 
