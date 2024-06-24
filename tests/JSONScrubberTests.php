@@ -245,6 +245,52 @@ final class JSONScrubberTests extends TestCase {
 		$this->assertConditionsMet();
 	}
 
+	public function test_scrub_custom_tables() {
+		global $wpdb;
+
+		$_config  = [
+			'custom_tables' => [
+				[
+					'name'        => 'custom_table_name',
+					'primary_key' => 'id',
+					'columns'     => [],
+				]
+			],
+		];
+		$config   = json_decode( json_encode( $_config ) );
+		$scrubber = new TestScrubber( $config, false );
+
+		$wpdb = Mockery::mock('WPDB');
+
+		$wpdb->shouldReceive( 'get_col' )
+			->once()
+			->with( 'SELECT id FROM custom_table_name' )
+			->andReturns( [ 123, 124 ] );
+
+		$wpdb->shouldReceive( 'update' )
+			->once()
+			->with(
+				'custom_table_name',
+				[],
+				[ 'id' => 123 ]
+			);
+
+			$wpdb->shouldReceive( 'update' )
+			->once()
+			->with(
+				'custom_table_name',
+				[],
+				[ 'id' => 124 ]
+			);
+
+		$this->assert_progress( 2 );
+
+		$result = $scrubber->scrub_custom_tables();
+
+		$this->assertNull( $result );
+		$this->assertConditionsMet();
+	}
+
 	/**
 	 * Helper method for progress assertions to reduce code.
 	 */
