@@ -1,6 +1,6 @@
-<?php
+<?php // phpcs:ignore
 /**
- * Class file for JSONScrubberTests class.
+ * Class file for JSONScrubberTests.
  *
  * @package TenUpWPScrubber
  */
