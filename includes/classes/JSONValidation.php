@@ -158,6 +158,7 @@ class JSONValidation {
 
 		if ( ! is_array( $this->config->custom_tables ) ) {
 			$this->errors[] = 'Invalid custom_tables configuration - Must be an array.';
+			return;
 		}
 
 		foreach ( $this->config->custom_tables as $custom_table ) {

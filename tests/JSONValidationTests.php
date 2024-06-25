@@ -438,4 +438,46 @@ final class JSONValidationTests extends TestCase {
 		$this->assertCount( 1, $errors );
 		$this->assertEquals( 'Invalid option configuration - Must be an object.', $errors[0] );
 	}
+
+	/**
+	 * Test case for validating custom tables configuration with no errors.
+	 */
+	public function test_validate_custom_tables_config_no_errors() {
+		$_config = [
+			'custom_tables' => [
+				[
+					'name'        => 'custom_table_name',
+					'primary_key' => 'id',
+					'columns'     => [
+						[
+							'name'   => 'col',
+							'action' => 'remove',
+						],
+					],
+				]
+			],
+		];
+		$config = json_decode( json_encode( $_config ) );
+
+		$validator = new JSONValidation( $config );
+		$errors    = $validator->get_errors();
+
+		$this->assertEmpty( $errors );
+	}
+
+	/**
+	 * Test case for validating custom tables configuration with an array_error.
+	 */
+	public function test_validate_custom_tables_config_array_error() {
+		$_config = [
+			'custom_tables' => 1,
+		];
+		$config = json_decode( json_encode( $_config ) );
+
+		$validator = new JSONValidation( $config );
+		$errors    = $validator->get_errors();
+
+		$this->assertCount( 1, $errors );
+		$this->assertEquals( 'Invalid custom_tables configuration - Must be an array.', $errors[0] );
+	}
 }
