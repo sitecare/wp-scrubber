@@ -466,7 +466,7 @@ final class JSONValidationTests extends TestCase {
 	}
 
 	/**
-	 * Test case for validating custom tables configuration with an array_error.
+	 * Test case for validating custom tables configuration with an array error.
 	 */
 	public function test_validate_custom_tables_config_array_error() {
 		$_config = [
@@ -479,5 +479,73 @@ final class JSONValidationTests extends TestCase {
 
 		$this->assertCount( 1, $errors );
 		$this->assertEquals( 'Invalid custom_tables configuration - Must be an array.', $errors[0] );
+	}
+
+	/**
+	 * Test case for validating custom tables configuration with an object error.
+	 */
+	public function test_validate_custom_tables_config_object_error() {
+		$_config = [
+			'custom_tables' => [ 1 ],
+		];
+		$config = json_decode( json_encode( $_config ) );
+
+		$validator = new JSONValidation( $config );
+		$errors    = $validator->get_errors();
+
+		$this->assertCount( 1, $errors );
+		$this->assertEquals( 'Invalid custom_table configuration - Must be an object.', $errors[0] );
+	}
+
+	/**
+	 * Test case for validating custom tables configuration with an name error.
+	 */
+	public function test_validate_custom_tables_config_name_error() {
+		$_config = [
+			'custom_tables' => [
+				[
+					'primary_key' => 'id',
+					'columns'     => [
+						[
+							'name'   => 'col',
+							'action' => 'remove',
+						],
+					],
+				],
+			 ],
+		];
+		$config = json_decode( json_encode( $_config ) );
+
+		$validator = new JSONValidation( $config );
+		$errors    = $validator->get_errors();
+
+		$this->assertCount( 1, $errors );
+		$this->assertEquals( 'Invalid custom_table configuration - Missing table name.', $errors[0] );
+	}
+
+	/**
+	 * Test case for validating custom tables configuration with an key error.
+	 */
+	public function test_validate_custom_tables_config_key_error() {
+		$_config = [
+			'custom_tables' => [
+				[
+					'name'    => 'custom_table_name',
+					'columns' => [
+						[
+							'name'   => 'col',
+							'action' => 'remove',
+						],
+					],
+				],
+			 ],
+		];
+		$config = json_decode( json_encode( $_config ) );
+
+		$validator = new JSONValidation( $config );
+		$errors    = $validator->get_errors();
+
+		$this->assertCount( 1, $errors );
+		$this->assertEquals( 'Invalid custom_table configuration - Missing primary key.', $errors[0] );
 	}
 }
