@@ -132,7 +132,7 @@ final class JSONValidationTests extends TestCase {
 	/**
 	 * Test case for validating object configuration with no errors.
 	 */
-	public function test_validate_object_config_no_errorss() {
+	public function test_validate_object_config_no_errors() {
 		$validator = new JSONValidation( new stdClass() );
 		$method    = $this->getInaccessibleMethod( $validator, 'validate_object_config' );
 
@@ -164,6 +164,29 @@ final class JSONValidationTests extends TestCase {
 		$errors = $validator->get_errors();
 
 		$this->assertEmpty( $errors );
+	}
+
+	/**
+	 * Test case for validating object configuration with array errors.
+	 */
+	public function test_validate_object_config_array_errors() {
+		$validator = new JSONValidation( new stdClass() );
+		$method    = $this->getInaccessibleMethod( $validator, 'validate_object_config' );
+
+		$_config = [
+			'fields'      => 1,
+			'meta_fields' => 1,
+			'columns'     => 1,
+		];
+		$config  = json_decode( json_encode( $_config ) );
+
+		$method->invokeArgs( $validator, [ $config, 'test-parent' ] );
+		$errors = $validator->get_errors();
+
+		$this->assertCount( 3, $errors );
+		$this->assertEquals( 'Invalid test-parent fields configuration - Must be an array.', $errors[0] );
+		$this->assertEquals( 'Invalid test-parent meta_fields configuration - Must be an array.', $errors[1] );
+		$this->assertEquals( 'Invalid test-parent columns configuration - Must be an array.', $errors[2] );
 	}
 
 	/**
