@@ -307,4 +307,84 @@ final class JSONValidationTests extends TestCase {
 		$this->assertCount( 1, $errors );
 		$this->assertEquals( 'Invalid post_type configuration - Missing post type name.', $errors[0] );
 	}
+
+	/**
+	 * Test case for validating taxonomies configuration with no errors.
+	 */
+	public function test_validate_taxonomies_config_no_errors() {
+		$_config = [
+			'taxonomies' => [
+				[
+					'name'   => 'test_tax',
+					'fields' => [
+						[
+							'name'       => 'name',
+							'action'     => 'faker',
+							'faker_type' => 'text',
+						],
+					],
+				],
+			],
+		];
+		$config = json_decode( json_encode( $_config ) );
+
+		$validator = new JSONValidation( $config );
+		$errors    = $validator->get_errors();
+
+		$this->assertEmpty( $errors );
+	}
+
+	/**
+	 * Test case for validating taxonomies configuration with array error.
+	 */
+	public function test_validate_taxonomies_config_array_error() {
+		$_config = [
+			'taxonomies' => 1,
+		];
+		$config = json_decode( json_encode( $_config ) );
+
+		$validator = new JSONValidation( $config );
+		$errors    = $validator->get_errors();
+
+		$this->assertCount( 1, $errors );
+		$this->assertEquals( 'Invalid taxonomies configuration - Must be an array.', $errors[0] );
+	}
+
+	/**
+	 * Test case for validating taxonomies configuration with object error.
+	 */
+	public function test_validate_taxonomies_config_object_error() {
+		$_config = [
+			'taxonomies' => [
+				1
+			],
+		];
+		$config = json_decode( json_encode( $_config ) );
+
+		$validator = new JSONValidation( $config );
+		$errors    = $validator->get_errors();
+
+		$this->assertCount( 1, $errors );
+		$this->assertEquals( 'Invalid taxonomy configuration - Must be an object.', $errors[0] );
+	}
+
+	/**
+	 * Test case for validating taxonomies configuration with object error.
+	 */
+	public function test_validate_taxonomies_config_name_error() {
+		$_config = [
+			'taxonomies' => [
+				[
+					'fields' => [],
+				]
+			],
+		];
+		$config = json_decode( json_encode( $_config ) );
+
+		$validator = new JSONValidation( $config );
+		$errors    = $validator->get_errors();
+
+		$this->assertCount( 1, $errors );
+		$this->assertEquals( 'Invalid taxonomy configuration - Missing taxonomy name.', $errors[0] );
+	}
 }

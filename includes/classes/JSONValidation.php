@@ -107,6 +107,7 @@ class JSONValidation {
 
 		if ( ! is_array( $this->config->taxonomies ) ) {
 			$this->errors[] = 'Invalid taxonomies configuration - Must be an array.';
+			return;
 		}
 
 		foreach ( $this->config->taxonomies as $taxonomy ) {
