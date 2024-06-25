@@ -548,4 +548,54 @@ final class JSONValidationTests extends TestCase {
 		$this->assertCount( 1, $errors );
 		$this->assertEquals( 'Invalid custom_table configuration - Missing primary key.', $errors[0] );
 	}
+
+	/**
+	 * Test case for validating truncate configuration with no errors.
+	 */
+	public function test_validate_truncate_config_no_errors() {
+		$_config = [
+			'truncate_tables' => [
+				'table1',
+				'table2',
+			],
+		];
+		$config = json_decode( json_encode( $_config ) );
+
+		$validator = new JSONValidation( $config );
+		$errors    = $validator->get_errors();
+
+		$this->assertEmpty( $errors );
+	}
+
+	/**
+	 * Test case for validating the truncate configuration with array error.
+	 */
+	public function test_validate_truncate_config_array_error() {
+		$_config = [
+			'truncate_tables' => 1,
+		];
+		$config = json_decode( json_encode( $_config ) );
+
+		$validator = new JSONValidation( $config );
+		$errors    = $validator->get_errors();
+
+		$this->assertCount( 1, $errors );
+		$this->assertEquals( 'Invalid truncate_tables configuration - Must be an array.', $errors[0] );
+	}
+
+	/**
+	 * Test case for validating the truncate configuration with string error.
+	 */
+	public function test_validate_truncate_config_string_error() {
+		$_config = [
+			'truncate_tables' => [ 1 ],
+		];
+		$config = json_decode( json_encode( $_config ) );
+
+		$validator = new JSONValidation( $config );
+		$errors    = $validator->get_errors();
+
+		$this->assertCount( 1, $errors );
+		$this->assertEquals( 'Invalid table in truncate_tables - Must be a string.', $errors[0] );
+	}
 }

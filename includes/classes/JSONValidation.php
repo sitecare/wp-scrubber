@@ -189,6 +189,7 @@ class JSONValidation {
 
 		if ( ! is_array( $this->config->truncate_tables ) ) {
 			$this->errors[] = 'Invalid truncate_tables configuration - Must be an array.';
+			return;
 		}
 
 		foreach ( $this->config->truncate_tables as $truncate_table ) {
