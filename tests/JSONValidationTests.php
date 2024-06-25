@@ -130,6 +130,43 @@ final class JSONValidationTests extends TestCase {
 	}
 
 	/**
+	 * Test case for validating object configuration with no errors.
+	 */
+	public function test_validate_object_config_no_errorss() {
+		$validator = new JSONValidation( new stdClass() );
+		$method    = $this->getInaccessibleMethod( $validator, 'validate_object_config' );
+
+		$_config = [
+			'fields'      => [
+				[
+					'name'   => 'display_name',
+					'action' => 'replace',
+					'value'  => 'John Doe',
+				],
+			],
+			'meta_fields' => [
+				[
+					'name'       => 'meta_field',
+					'action'     => 'faker',
+					'faker_type' => 'text',
+				],
+			],
+			'columns'     => [
+				[
+					'name'       => 'col',
+					'action'     => 'remove',
+				],
+			],
+		];
+		$config  = json_decode( json_encode( $_config ) );
+
+		$method->invokeArgs( $validator, [ $config, 'test-parent' ] );
+		$errors = $validator->get_errors();
+
+		$this->assertEmpty( $errors );
+	}
+
+	/**
 	 * Tests the validate_user_config method.
 	 * Tests case when no errors are present.
 	 */
