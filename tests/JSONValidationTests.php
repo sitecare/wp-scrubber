@@ -26,5 +26,6 @@ final class JSONValidationTests extends TestCase {
 		$config_prop = $this->getInaccessibleProperty( $instance, 'config' )->getValue( $instance );
 
 		$this->assertEquals( $config->foo, $config_prop->foo );
+		$this->assertEquals( [], $instance->get_errors() );
 	}
 }
