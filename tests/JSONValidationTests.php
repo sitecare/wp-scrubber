@@ -22,7 +22,7 @@ final class JSONValidationTests extends TestCase {
 		$config      = new stdClass();
 		$config->foo = 'bar';
 
-		$instance    = new JSONValidation( $config);
+		$instance    = new JSONValidation( $config );
 		$config_prop = $this->getInaccessibleProperty( $instance, 'config' )->getValue( $instance );
 
 		$this->assertEquals( $config->foo, $config_prop->foo );
@@ -98,7 +98,7 @@ final class JSONValidationTests extends TestCase {
 
 		$_config = [
 			'name'   => 'display_name',
-			'action' => 'replace'
+			'action' => 'replace',
 		];
 		$config  = json_decode( json_encode( $_config ) );
 
@@ -153,8 +153,8 @@ final class JSONValidationTests extends TestCase {
 			],
 			'columns'     => [
 				[
-					'name'       => 'col',
-					'action'     => 'remove',
+					'name'   => 'col',
+					'action' => 'remove',
 				],
 			],
 		];
@@ -205,7 +205,7 @@ final class JSONValidationTests extends TestCase {
 				],
 			],
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -218,7 +218,7 @@ final class JSONValidationTests extends TestCase {
 	 * Tests case when config is not an object.
 	 */
 	public function test_validate_user_config_object_error() {
-		$config = new stdClass();
+		$config            = new stdClass();
 		$config->user_data = [ 123 ];
 
 		$validator = new JSONValidation( $config );
@@ -246,7 +246,7 @@ final class JSONValidationTests extends TestCase {
 				],
 			],
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -261,7 +261,7 @@ final class JSONValidationTests extends TestCase {
 		$_config = [
 			'post_types' => 1,
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -276,10 +276,10 @@ final class JSONValidationTests extends TestCase {
 	public function test_validate_post_types_config_object_error() {
 		$_config = [
 			'post_types' => [
-				1
+				1,
 			],
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -296,10 +296,10 @@ final class JSONValidationTests extends TestCase {
 			'post_types' => [
 				[
 					'fields' => [],
-				]
+				],
 			],
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -326,7 +326,7 @@ final class JSONValidationTests extends TestCase {
 				],
 			],
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -341,7 +341,7 @@ final class JSONValidationTests extends TestCase {
 		$_config = [
 			'taxonomies' => 1,
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -357,7 +357,7 @@ final class JSONValidationTests extends TestCase {
 		$_config = [
 			'taxonomies' => [ 1 ],
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -374,10 +374,10 @@ final class JSONValidationTests extends TestCase {
 			'taxonomies' => [
 				[
 					'fields' => [],
-				]
+				],
 			],
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -396,10 +396,10 @@ final class JSONValidationTests extends TestCase {
 					'name'   => 'test_option',
 					'action' => 'replace',
 					'value'  => 'foobar',
-				]
+				],
 			],
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -414,7 +414,7 @@ final class JSONValidationTests extends TestCase {
 		$_config = [
 			'options' => 1,
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -430,7 +430,7 @@ final class JSONValidationTests extends TestCase {
 		$_config = [
 			'options' => [ 1 ],
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -454,10 +454,10 @@ final class JSONValidationTests extends TestCase {
 							'action' => 'remove',
 						],
 					],
-				]
+				],
 			],
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -472,7 +472,7 @@ final class JSONValidationTests extends TestCase {
 		$_config = [
 			'custom_tables' => 1,
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -488,7 +488,7 @@ final class JSONValidationTests extends TestCase {
 		$_config = [
 			'custom_tables' => [ 1 ],
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -512,9 +512,9 @@ final class JSONValidationTests extends TestCase {
 						],
 					],
 				],
-			 ],
+			],
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -538,9 +538,9 @@ final class JSONValidationTests extends TestCase {
 						],
 					],
 				],
-			 ],
+			],
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -559,7 +559,7 @@ final class JSONValidationTests extends TestCase {
 				'table2',
 			],
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -574,7 +574,7 @@ final class JSONValidationTests extends TestCase {
 		$_config = [
 			'truncate_tables' => 1,
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
@@ -590,7 +590,7 @@ final class JSONValidationTests extends TestCase {
 		$_config = [
 			'truncate_tables' => [ 1 ],
 		];
-		$config = json_decode( json_encode( $_config ) );
+		$config  = json_decode( json_encode( $_config ) );
 
 		$validator = new JSONValidation( $config );
 		$errors    = $validator->get_errors();
