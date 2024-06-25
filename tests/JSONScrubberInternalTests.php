@@ -28,7 +28,7 @@ final class JSONScrubberInternalTests extends TestCase {
 			'value'  => 'Jane Doe',
 		];
 
-		$field  = json_decode( wp_json_encode( $_field ) );
+		$field  = json_decode( json_encode( $_field ) );
 		$result = $method->invokeArgs( $scrubber, [ $field ] );
 
 		$this->assertEquals( 'Jane Doe', $result );
@@ -46,7 +46,7 @@ final class JSONScrubberInternalTests extends TestCase {
 			'action' => 'remove',
 		];
 
-		$field  = json_decode( wp_json_encode( $_field ) );
+		$field  = json_decode( json_encode( $_field ) );
 		$result = $method->invokeArgs( $scrubber, [ $field ] );
 
 		$this->assertEquals( '', $result );
@@ -65,7 +65,7 @@ final class JSONScrubberInternalTests extends TestCase {
 			'faker_type' => 'randomDigit',
 		];
 
-		$field  = json_decode( wp_json_encode( $_field ) );
+		$field  = json_decode( json_encode( $_field ) );
 		$result = $method->invokeArgs( $scrubber, [ $field ] );
 
 		$this->assertIsInt( $result );
@@ -86,7 +86,7 @@ final class JSONScrubberInternalTests extends TestCase {
 
 		Mockery::mock( '\WP_Error' );
 
-		$field  = json_decode( wp_json_encode( $_field ) );
+		$field  = json_decode( json_encode( $_field ) );
 		$result = $method->invokeArgs( $scrubber, [ $field ] );
 
 		$this->assertInstanceOf( '\WP_Error', $result );
@@ -126,7 +126,7 @@ final class JSONScrubberInternalTests extends TestCase {
 			)
 			->andReturn( true );
 
-		$config = json_decode( wp_json_encode( $_config ) );
+		$config = json_decode( json_encode( $_config ) );
 		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'user' ] );
 
 		$this->assertTrue( $result );
@@ -167,7 +167,7 @@ final class JSONScrubberInternalTests extends TestCase {
 			)
 			->andReturn( true );
 
-		$config = json_decode( wp_json_encode( $_config ) );
+		$config = json_decode( json_encode( $_config ) );
 		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'term' ] );
 
 		$this->assertTrue( $result );
@@ -208,7 +208,7 @@ final class JSONScrubberInternalTests extends TestCase {
 			)
 			->andReturn( true );
 
-		$config = json_decode( wp_json_encode( $_config ) );
+		$config = json_decode( json_encode( $_config ) );
 		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'post' ] );
 
 		$this->assertTrue( $result );
@@ -243,7 +243,7 @@ final class JSONScrubberInternalTests extends TestCase {
 			)
 			->andReturn( true );
 
-		$config = json_decode( wp_json_encode( $_config ) );
+		$config = json_decode( json_encode( $_config ) );
 		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'term' ] );
 
 		$this->assertTrue( $result );
@@ -284,7 +284,7 @@ final class JSONScrubberInternalTests extends TestCase {
 				[ 'ID' => 123 ]
 			);
 
-		$config = json_decode( wp_json_encode( $_config ) );
+		$config = json_decode( json_encode( $_config ) );
 		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'user' ] );
 
 		$this->assertTrue( $result );
@@ -345,7 +345,7 @@ final class JSONScrubberInternalTests extends TestCase {
 				]
 			);
 
-		$config = json_decode( wp_json_encode( $_config ) );
+		$config = json_decode( json_encode( $_config ) );
 		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'post' ] );
 
 		$this->assertTrue( $result );
@@ -404,7 +404,7 @@ final class JSONScrubberInternalTests extends TestCase {
 				[ 'term_id' => 123 ],
 			);
 
-		$config = json_decode( wp_json_encode( $_config ) );
+		$config = json_decode( json_encode( $_config ) );
 		$result = $method->invokeArgs( $scrubber, [ 123, $config, 'term' ] );
 
 		$this->assertTrue( $result );

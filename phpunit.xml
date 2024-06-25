@@ -4,6 +4,7 @@
 		<testsuite name="Test Suite">
 			<file>tests/JSONScrubberInternalTests.php</file>
 			<file>tests/JSONScrubberTests.php</file>
+			<file>tests/JSONValidationTests.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>
