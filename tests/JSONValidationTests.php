@@ -30,6 +30,106 @@ final class JSONValidationTests extends TestCase {
 	}
 
 	/**
+	 * Test case for validating field configuration with no errors.
+	 */
+	public function test_validate_field_config_no_errors() {
+		$validator = new JSONValidation( new stdClass() );
+		$method    = $this->getInaccessibleMethod( $validator, 'validate_field_config' );
+
+		$_config = [
+			'name'   => 'display_name',
+			'action' => 'replace',
+			'value'  => 'John Doe',
+		];
+		$config  = json_decode( json_encode( $_config ) );
+
+		$method->invokeArgs( $validator, [ $config, 'test-parent' ] );
+		$errors = $validator->get_errors();
+
+		$this->assertEmpty( $errors );
+	}
+
+	/**
+	 * Test case for validating field configuration with missing name.
+	 */
+	public function test_validate_field_config_missing_name() {
+		$validator = new JSONValidation( new stdClass() );
+		$method    = $this->getInaccessibleMethod( $validator, 'validate_field_config' );
+
+		$_config = [
+			'action' => 'replace',
+			'value'  => 'John Doe',
+		];
+		$config  = json_decode( json_encode( $_config ) );
+
+		$method->invokeArgs( $validator, [ $config, 'test-parent' ] );
+		$errors = $validator->get_errors();
+
+		$this->assertCount( 1, $errors );
+		$this->assertEquals( 'Invalid test-parent configuration - Missing field name.', $errors[0] );
+	}
+
+	/**
+	 * Test case for validating field configuration with missing action.
+	 */
+	public function test_validate_field_config_missing_action() {
+		$validator = new JSONValidation( new stdClass() );
+		$method    = $this->getInaccessibleMethod( $validator, 'validate_field_config' );
+
+		$_config = [
+			'name'  => 'display_name',
+			'value' => 'John Doe',
+		];
+		$config  = json_decode( json_encode( $_config ) );
+
+		$method->invokeArgs( $validator, [ $config, 'test-parent' ] );
+		$errors = $validator->get_errors();
+
+		$this->assertCount( 1, $errors );
+		$this->assertEquals( 'Invalid test-parent configuration - Missing field action.', $errors[0] );
+	}
+
+	/**
+	 * Test case for validating field configuration with missing replace.
+	 */
+	public function test_validate_field_config_missing_replace() {
+		$validator = new JSONValidation( new stdClass() );
+		$method    = $this->getInaccessibleMethod( $validator, 'validate_field_config' );
+
+		$_config = [
+			'name'   => 'display_name',
+			'action' => 'replace'
+		];
+		$config  = json_decode( json_encode( $_config ) );
+
+		$method->invokeArgs( $validator, [ $config, 'test-parent' ] );
+		$errors = $validator->get_errors();
+
+		$this->assertCount( 1, $errors );
+		$this->assertEquals( 'Invalid test-parent configuration - Missing replace value.', $errors[0] );
+	}
+
+	/**
+	 * Test case for validating field configuration with missing faker_type.
+	 */
+	public function test_validate_field_config_missing_faker_type() {
+		$validator = new JSONValidation( new stdClass() );
+		$method    = $this->getInaccessibleMethod( $validator, 'validate_field_config' );
+
+		$_config = [
+			'name'   => 'display_name',
+			'action' => 'faker',
+		];
+		$config  = json_decode( json_encode( $_config ) );
+
+		$method->invokeArgs( $validator, [ $config, 'test-parent' ] );
+		$errors = $validator->get_errors();
+
+		$this->assertCount( 1, $errors );
+		$this->assertEquals( 'Invalid test-parent configuration - Missing faker type.', $errors[0] );
+	}
+
+	/**
 	 * Tests the validate_user_config method.
 	 * Tests case when no errors are present.
 	 */

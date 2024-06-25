@@ -254,6 +254,7 @@ class JSONValidation {
 
 		if ( empty( $field->action ) ) {
 			$this->errors[] = sprintf( 'Invalid %s configuration - Missing field action.', $parent );
+			return;
 		}
 
 		if ( 'replace' === $field->action && ! isset( $field->value ) ) {
