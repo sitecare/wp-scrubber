@@ -80,6 +80,7 @@ class JSONValidation {
 
 		if ( ! is_array( $this->config->post_types ) ) {
 			$this->errors[] = 'Invalid post_types configuration - Must be an array.';
+			return;
 		}
 
 		foreach ( $this->config->post_types as $post_type ) {
