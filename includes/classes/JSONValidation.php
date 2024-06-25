@@ -134,6 +134,7 @@ class JSONValidation {
 
 		if ( ! is_array( $this->config->options ) ) {
 			$this->errors[] = 'Invalid options configuration - Must be an array.';
+			return;
 		}
 
 		foreach ( $this->config->options as $option ) {
