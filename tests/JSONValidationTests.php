@@ -269,4 +269,42 @@ final class JSONValidationTests extends TestCase {
 		$this->assertCount( 1, $errors );
 		$this->assertEquals( 'Invalid post_types configuration - Must be an array.', $errors[0] );
 	}
+
+	/**
+	 * Test case for validating post types configuration with object error.
+	 */
+	public function test_validate_post_types_config_object_error() {
+		$_config = [
+			'post_types' => [
+				1
+			],
+		];
+		$config = json_decode( json_encode( $_config ) );
+
+		$validator = new JSONValidation( $config );
+		$errors    = $validator->get_errors();
+
+		$this->assertCount( 1, $errors );
+		$this->assertEquals( 'Invalid post_type configuration - Must be an object.', $errors[0] );
+	}
+
+	/**
+	 * Test case for validating post types configuration with object error.
+	 */
+	public function test_validate_post_types_config_name_error() {
+		$_config = [
+			'post_types' => [
+				[
+					'fields' => [],
+				]
+			],
+		];
+		$config = json_decode( json_encode( $_config ) );
+
+		$validator = new JSONValidation( $config );
+		$errors    = $validator->get_errors();
+
+		$this->assertCount( 1, $errors );
+		$this->assertEquals( 'Invalid post_type configuration - Missing post type name.', $errors[0] );
+	}
 }
