@@ -20,7 +20,7 @@
   "scripts": {
     "lint": "phpcs -s .",
     "lint-fix": "phpcbf .",
-	"phpunit": "phpunit"
+	  "phpunit": "phpunit"
   },
   "autoload": {
     "psr-4": {
