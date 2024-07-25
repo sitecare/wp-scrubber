@@ -13,7 +13,7 @@ use TenUpWPScrubber\JSONScrubber;
  *
  * This class contains unit tests for the JSONScrubber class.
  */
-final class JSONScrubberInternalTests extends TestCase {
+final class JSONScrubberInternalTest extends TestCase {
 
 	/**
 	 * Test case for the `get_field_data_by_action` method.

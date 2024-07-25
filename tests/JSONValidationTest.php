@@ -13,7 +13,7 @@ use TenUpWPScrubber\JSONValidation;
  *
  * This class contains unit tests for the JSONValidation class.
  */
-final class JSONValidationTests extends TestCase {
+final class JSONValidationTest extends TestCase {
 
 	/**
 	 * Test the instance creation of JSONValidation.

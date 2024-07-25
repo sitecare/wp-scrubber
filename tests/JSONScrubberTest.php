@@ -15,7 +15,7 @@ use TenUpWPScrubber\JSONScrubber;
  *
  * This class contains unit tests for the JSONScrubber class.
  */
-final class JSONScrubberTests extends TestCase {
+final class JSONScrubberTest extends TestCase {
 
 	/**
 	 * Test the instance creation of JSONScrubber.
