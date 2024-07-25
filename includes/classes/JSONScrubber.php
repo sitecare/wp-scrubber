@@ -226,7 +226,7 @@ class JSONScrubber {
 	 *
 	 * @return bool|\WP_Error The result of the scrub operation. True on success, false or WP_Error on failure.
 	 */
-	protected function scrub_object_by_type( int $object_id, object $object_config, string $object_type ): bool|\WP_Error {
+	protected function scrub_object_by_type( int $object_id, object $object_config, string $object_type ) {
 		global $wpdb;
 
 		switch ( $object_type ) {
@@ -299,7 +299,7 @@ class JSONScrubber {
 	 *
 	 * @return bool|\WP_Error The result of the scrub operation. True on success, false or WP_Error on failure.
 	 */
-	protected function scrub_meta_field( int $object_id, object $field_config, string $object_type ): bool|\WP_Error {
+	protected function scrub_meta_field( int $object_id, object $field_config, string $object_type ) {
 		global $wpdb;
 
 		$meta_key = $field_config->name;
@@ -356,7 +356,7 @@ class JSONScrubber {
 	 *
 	 * @return mixed The data for the field.
 	 */
-	protected function get_field_data_by_action( object $field ): mixed {
+	protected function get_field_data_by_action( object $field ) {
 		$data = null;
 
 		switch ( $field->action ) {

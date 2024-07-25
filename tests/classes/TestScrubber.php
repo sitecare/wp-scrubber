@@ -23,7 +23,7 @@ class TestScrubber extends JSONScrubber {
 	 * @param string $object_type Object type.
 	 * @return bool|\WP_Error
 	 */
-	protected function scrub_object_by_type( int $object_id, object $object_config, string $object_type ): bool|\WP_Error {
+	protected function scrub_object_by_type( int $object_id, object $object_config, string $object_type ) {
 		return true;
 	}
 }
