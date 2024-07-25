@@ -369,7 +369,7 @@ function get_all_revision_ids_from_post_ids( $post_ids ) {
 	$query = "SELECT *
 		FROM wp_posts
 		WHERE post_type = 'revision'
-		AND post_parent IN (${ids_string});";
+		AND post_parent IN ({$ids_string});";
 
 	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	return $wpdb->get_col( $query );
