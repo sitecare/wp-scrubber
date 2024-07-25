@@ -103,7 +103,7 @@ WP Scrubber scrubs PII based on where WordPress core stores data (users, comment
 
 ## JSON Configuration
 WP Scrubber also includes the option to configure scrubbing rules using a JSON configuration file. This allows for more detailed and flexible scrubbing rules for post types, taxonomies, options, user data, custom tables, and truncating tables.
-To use the JSON configuration, create a `wp-scrubber.json` file in the root of your WordPress installation. The plugin will automatically detect and use this file for scrubbing rules.~~~~
+To use the JSON configuration, create a `wp-scrubber.json` file in the root of your WordPress installation. The plugin will automatically detect and use this file for scrubbing rules.
 
 ### JSON Configuration Structure
 
