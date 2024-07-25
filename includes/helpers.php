@@ -400,7 +400,7 @@ function get_all_term_ids_of_taxonomy( $taxonomy ) {
  *
  * @return mixed The generated fake data.
  */
-function get_fake_data( string $type ): mixed {
+function get_fake_data( string $type ) {
 	static $faker;
 
 	if ( ! $faker ) {
