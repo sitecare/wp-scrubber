@@ -101,6 +101,158 @@ In addition to CLI arguments, three filters are available to developers
 
 WP Scrubber scrubs PII based on where WordPress core stores data (users, comments, standard user/comment meta keys). It does not have knowledge of PII stored by third party plugins. Even when using this tool you should audit your database for third party PII.
 
+## JSON Configuration
+WP Scrubber also includes the option to configure scrubbing rules using a JSON configuration file. This allows for more detailed and flexible scrubbing rules for post types, taxonomies, options, user data, custom tables, and truncating tables.
+To use the JSON configuration, create a `wp-scrubber.json` file in the root of your WordPress installation. The plugin will automatically detect and use this file for scrubbing rules.~~~~
+
+### JSON Configuration Structure
+
+#### Post Types
+Define which post types and their associated fields and meta fields to scrub.
+
+```json
+{
+  "post_types": [
+    {
+      "name": "post",
+      "fields": [
+        { "name": "post_title", "action": "faker", "faker_type": "sentence" }
+        // More fields...
+      ],
+      "meta_fields": [
+        { "key": "meta_key_name", "action": "replace", "value": "new value" }
+        // More meta_fields...
+      ]
+    },
+    // More post_types...
+  ]
+}
+```
+
+- `name`: The post type (e.g., post, page).
+- `fields`: Fields to scrub within the post type.
+	- `name`: Field name.
+	- `action`: Scrubbing action (`faker`, `replace`, `remove`).
+	- `faker_type`: Type of fake data from Faker (e.g., `sentence`).
+	- `value`: Replacement value for `replace` action.
+- `meta_fields`: Post meta fields to scrub.
+	- `key`: Meta key.
+	- `action`, `faker_type`, `value`: As described above.
+
+#### Taxonomies
+Define taxonomies and their terms and meta fields to scrub.
+
+```json
+{
+  "taxonomies": [
+    {
+      "name": "category",
+      "fields": [
+        { "name": "name", "action": "faker", "faker_type": "sentence" }
+        // More fields...
+      ],
+      "meta_fields": [
+        { "key": "meta_key_name", "action": "replace", "value": "new value" }
+        // More meta_fields...
+      ]
+    },
+    // More taxonomies...
+  ]
+}
+```
+
+- `name`: Taxonomy name.
+- `fields`: Fields to scrub within the terms.
+	- `name`, `action`, `faker_type`, `value`: As described above.
+- `meta_fields`: Term meta fields to scrub.
+	- `key`, `action`, `faker_type`, `value`: As described above.
+
+#### Options
+Define WordPress options to scrub.
+
+```json
+{
+  "options": [
+    { "name": "admin_email", "action": "faker", "faker_type": "email" }
+    // More options...
+  ]
+}
+```
+
+- `name`: Option name.
+- `action`, `faker_type`, `value`: As described above.
+
+#### User Data
+Define user data fields to scrub.
+
+```json
+{
+  "user_data": [
+    "fields": [
+      { "name": "user_email", "action": "faker", "faker_type": "email" }
+      // More user_data...
+    ],
+    "meta_fields": [
+      { "key": "meta_key_name", "action": "replace", "value": "new value" }
+      // More meta_fields...
+    ]
+  ]
+}
+```
+
+- `fields`: Fields to scrub within the user.
+	- `name`, `action`, `faker_type`, `value`: As described above.
+- `meta_fields`: User meta fields to scrub.
+	- `key`, `action`, `faker_type`, `value`: As described above.
+
+#### Custom Tables
+Define custom tables and columns to scrub.
+
+```json
+{
+  "custom_tables": [
+    {
+      "name": "custom_table_name",
+      "primary_key": "id",
+      "columns": [
+        { "name": "column_name", "action": "faker", "faker_type": "name" }
+        // More columns...
+      ]
+    },
+    // More custom_tables...
+  ]
+}
+```
+
+- `name`: Custom table name.
+-  `primary_key`: Primary key column name.
+- `columns`: Columns within the custom table to scrub.
+	- `name`, `action`, `faker_type`, `value`: As described above.
+
+#### Truncate Tables
+List tables to be entirely truncated.
+
+```json
+{
+  "truncate_tables": [
+    "table_to_truncate"
+    // More tables to truncate...
+  ]
+}
+```
+
+- `truncate_tables`: List of table names to truncate.
+
+### Scrubbing Actions
+- `action`: Defines the scrubbing action (`faker`, `replace`, `remove`).
+- `faker_type`: Specifies the type of fake data (e.g., `name`, `email`) when using the `faker` action.
+- `value`: For the `replace` action, the specific value to replace the original data.
+
+### Full Example
+See a full example JSON config at [`/config-example`](/config-example.json).
+
+
+
 ## Definition of Beta
 
 10up considers this tool production ready for 10up projects. Publicly we define it as beta because we are wary of people relying on this tool solely when third party software can store PII in unknown locations.
