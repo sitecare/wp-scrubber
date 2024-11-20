@@ -62,6 +62,7 @@ class Command extends WP_CLI_Command {
 		$allowed_domains = [
 			'get10up.com',
 			'10up.com',
+			'fueled.com',
 		];
 
 		$allowed_emails = [];
