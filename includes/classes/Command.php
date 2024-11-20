@@ -25,9 +25,13 @@ class Command extends WP_CLI_Command {
 	 * @return mixed
 	 */
 	protected function scrub( $modes, $args, $assoc_args ) {
+		if ( ! defined( 'WP_IMPORTING' ) ) {
+			define( 'WP_IMPORTING', true );
+		}
 
-		define( 'WP_IMPORTING', true );
-		define( 'WP_ADMIN', true );
+		if ( ! defined( 'WP_ADMIN' ) ) {
+			define( 'WP_ADMIN', true );
+		}
 
 		$defaults = apply_filters(
 			'wp_scrubber_scrub_all_defaults',
