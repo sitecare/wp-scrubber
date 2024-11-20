@@ -267,12 +267,19 @@ final class JSONScrubberTest extends TestCase {
 					'primary_key' => 'id',
 					'columns'     => [],
 				],
+				[
+					'name'        => 'wp_custom_table_name',
+					'primary_key' => 'id',
+					'columns'     => [],
+				],
 			],
 		];
 		$config   = json_decode( json_encode( $_config ) );
 		$scrubber = new TestScrubber( $config, false );
 
 		$wpdb = Mockery::mock( 'WPDB' );
+
+		$wpdb->prefix = 'wp_1_';
 
 		$wpdb->shouldReceive( 'get_col' )
 			->once()
@@ -287,10 +294,33 @@ final class JSONScrubberTest extends TestCase {
 				[ 'id' => 123 ]
 			);
 
-			$wpdb->shouldReceive( 'update' )
+		$wpdb->shouldReceive( 'update' )
 			->once()
 			->with(
 				'custom_table_name',
+				[],
+				[ 'id' => 124 ]
+			);
+
+		$this->assert_progress( 2 );
+
+		$wpdb->shouldReceive( 'get_col' )
+			->once()
+			->with( 'SELECT id FROM wp_1_custom_table_name' )
+			->andReturns( [ 123, 124 ] );
+
+		$wpdb->shouldReceive( 'update' )
+			->once()
+			->with(
+				'wp_1_custom_table_name',
+				[],
+				[ 'id' => 123 ]
+			);
+
+		$wpdb->shouldReceive( 'update' )
+			->once()
+			->with(
+				'wp_1_custom_table_name',
 				[],
 				[ 'id' => 124 ]
 			);
@@ -314,24 +344,31 @@ final class JSONScrubberTest extends TestCase {
 			'truncate_tables' => [
 				'custom_table_one',
 				'custom_table_two',
+				'wp_comments',
 			],
 		];
 		$config   = json_decode( json_encode( $_config ) );
 		$scrubber = new TestScrubber( $config, false );
 
 		$wpdb = Mockery::mock( 'WPDB' );
+		$wpdb->prefix = 'wp_1_';
 
 		$wpdb->shouldReceive( 'query' )
 			->once()
 			->with( 'TRUNCATE TABLE custom_table_one' )
 			->andReturn( true );
 
-			$wpdb->shouldReceive( 'query' )
+		$wpdb->shouldReceive( 'query' )
 			->once()
 			->with( 'TRUNCATE TABLE custom_table_two' )
 			->andReturn( true );
 
-		$this->assert_progress( 2 );
+		$wpdb->shouldReceive( 'query' )
+			->once()
+			->with( 'TRUNCATE TABLE wp_1_comments' )
+			->andReturn( true );
+
+		$this->assert_progress( 3 );
 
 		$result = $scrubber->truncate_tables();
 
