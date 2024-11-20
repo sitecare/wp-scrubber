@@ -216,6 +216,29 @@ class Command extends WP_CLI_Command {
 			WP_CLI::error( 'Errors found in config file. Please correct them and try again.' );
 		}
 
+		if ( is_multisite() ) {
+			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM {$wpdb->blogs}" );
+			foreach ( $blog_ids as $blog_id ) {
+				switch_to_blog( $blog_id );
+				WP_CLI::log( WP_CLI::colorize( '%y' ) . 'Starting scrubbing blog ' . get_home_url() . WP_CLI::colorize( '%n' ) );
+				$this->scrub_config( $config, $show_errors );
+				WP_CLI::log( WP_CLI::colorize( '%y' ) . 'Finished scrubbing blog ' . get_home_url() . PHP_EOL . WP_CLI::colorize( '%n' ) );
+				restore_current_blog();
+			}
+		} else {
+			$this->scrub_config( $config, $show_errors );
+		}
+
+		WP_CLI::success( 'Scrubbing complete!' );
+	}
+
+	/**
+	 * Scrub config.
+	 *
+	 * @param object $config      Config object.
+	 * @param bool   $show_errors Show errors.
+	 */
+	protected function scrub_config( $config, $show_errors ) {
 		$scrubber = new JSONScrubber( $config, $show_errors );
 		$scrubber->scrub_users();
 		$scrubber->scrub_post_types();
@@ -223,7 +246,5 @@ class Command extends WP_CLI_Command {
 		$scrubber->scrub_options();
 		$scrubber->scrub_custom_tables();
 		$scrubber->truncate_tables();
-
-		WP_CLI::success( 'Scrubbing complete!' );
 	}
 }
