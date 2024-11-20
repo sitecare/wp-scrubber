@@ -10,13 +10,14 @@
     }
   ],
   "require": {
-    "php": ">=7.4",
+    "php": ">=8.0",
     "fakerphp/faker": "^1.23"
   },
   "require-dev": {
     "10up/phpcs-composer": "^3.0.0",
     "10up/wp_mock": "^1.0",
-    "phpunit/phpunit": "^9.6"
+    "phpunit/phpunit": "^9.6",
+    "wp-cli/wp-cli": "^2.11"
   },
   "scripts": {
     "lint": "phpcs -s .",
