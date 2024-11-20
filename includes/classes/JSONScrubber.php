@@ -174,6 +174,12 @@ class JSONScrubber {
 
 		foreach ( $this->config->custom_tables as $table ) {
 			$name     = $table->name;
+
+			// For multisite, replace the table prefix, otherwise we need to list all tables for all sites and that's a pain.
+			if ( str_starts_with( $name, 'wp_' ) ) {
+				$name = preg_replace('/^wp_/', $wpdb->prefix, $name);
+			}
+
 			$pk       = $table->primary_key;
 			$query    = "SELECT {$pk} FROM {$name}";
 			$ids      = $wpdb->get_col( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
@@ -208,6 +214,11 @@ class JSONScrubber {
 		$progress = \WP_CLI\Utils\make_progress_bar( 'Truncating tables', count( $this->config->truncate_tables ) );
 
 		foreach ( $this->config->truncate_tables as $table ) {
+			// For multisite, replace the table prefix, otherwise we need to list all tables for all sites and that's a pain.
+			if ( str_starts_with( $table, 'wp_' ) ) {
+				$table = preg_replace('/^wp_/', $wpdb->prefix, $table);
+			}
+
 			$wpdb->query( "TRUNCATE TABLE {$table}" ); // phpcs:ignore WordPress.DB.PreparedSQL
 			$progress->tick();
 		}
