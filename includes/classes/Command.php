@@ -40,6 +40,8 @@ class Command extends \WP_CLI_Command {
 		$allowed_domains = [
 			'get10up.com',
 			'10up.com',
+			'sitecare.com',
+			'sitecare.pro'
 		];
 
 		$allowed_emails = [];
